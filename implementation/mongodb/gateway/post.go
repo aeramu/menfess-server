@@ -20,6 +20,15 @@ type Post struct {
 type Posts []*Post
 
 func (m *Post) Entity() entity.Post {
+	var repost entity.Post = nil
+	if len(m.Repost) > 0 {
+		repost = m.Repost[0].Entity()
+	}
+	var room entity.Room = nil
+	if len(m.Room) > 0 {
+		room = m.Room[0].Entity()
+	}
+
 	return entity.PostConstructor{
 		ID:           m.ID.Hex(),
 		Timestamp:    int(m.ID.Timestamp().Unix()),
@@ -29,8 +38,8 @@ func (m *Post) Entity() entity.Post {
 		UpvoterIDs:   m.UpvoterIDs,
 		DownvoterIDs: m.DownvoterIDs,
 		ReplyCount:   m.ReplyCount,
-		Repost:       m.Repost[0].Entity(),
-		Room:         m.Room[0].Entity(),
+		Repost:       repost,
+		Room:         room,
 	}.New()
 }
 

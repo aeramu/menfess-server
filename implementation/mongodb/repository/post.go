@@ -38,12 +38,11 @@ func (repo *repo) GetPostByID(hexID string) entity.Post {
 
 	var posts []*gateway.Post
 	cursor.All(context.TODO(), &posts)
-	post := posts[0]
 
-	if post.ID.IsZero() {
+	if len(posts) == 0 {
 		return nil
 	}
-	return post.Entity()
+	return posts[0].Entity()
 }
 
 func (repo *repo) GetPostListByParentID(parentID string, first int, after string, ascSort bool) []entity.Post {
