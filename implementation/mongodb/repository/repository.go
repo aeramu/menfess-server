@@ -3,8 +3,6 @@ package repository
 import (
 	"context"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
-
 	"github.com/aeramu/menfess-server/usecase"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -37,8 +35,4 @@ type repo struct {
 	db     *mongo.Database
 	post   *mongo.Collection
 	room   *mongo.Collection
-}
-
-func (repo *repo) NewID() string {
-	return primitive.NewObjectID().Hex()
 }

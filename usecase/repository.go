@@ -10,7 +10,6 @@ type interactor struct {
 
 //Repository interface
 type Repository interface {
-	NewID() string
 	GetPostByID(id string) entity.Post
 	GetPostListByParentID(parentID string, first int, after string, ascSort bool) []entity.Post
 	GetPostListByRoomIDs(roomIDs []string, first int, after string, ascSort bool) []entity.Post
