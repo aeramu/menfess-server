@@ -14,6 +14,7 @@ import (
 func (repo *repo) GetPostByID(hexID string) entity.Post {
 	id, _ := primitive.ObjectIDFromHex(hexID)
 
+	//TODO: aggregate
 	filter := bson.D{{"_id", id}}
 	var post gateway.Post
 	repo.post.FindOne(context.TODO(), filter).Decode(&post)
