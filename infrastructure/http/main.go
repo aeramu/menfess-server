@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
 
 	resolver "github.com/aeramu/menfess-server/implementation/graphql.resolver"
 	"github.com/aeramu/menfess-server/implementation/mongodb/repository"
@@ -33,7 +34,16 @@ func main() {
 	}
 	http.Handle("/graphiql", graphiqlHandler)
 
-	log.Println("Server ready at 8000")
-	log.Println("Graphiql ready at 8000/graphiql")
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	port := getPort()
+	log.Println("Server ready at " + port)
+	log.Println("Graphiql ready at " + port + "/graphiql")
+	log.Fatal(http.ListenAndServe(port, nil))
+}
+
+func getPort() string {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
+	return ":" + port
 }
