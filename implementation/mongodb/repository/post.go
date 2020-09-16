@@ -101,9 +101,15 @@ func (repo *repo) GetPostListByRoomIDs(roomIDs []string, first int, after string
 			}}},
 		}},
 	}
-	sortOpt := bson.D{{"_id", sort}}
-	option := options.Find().SetLimit(int64(first)).SetSort(sortOpt)
-	cursor, _ := repo.post.Find(context.TODO(), filter, option)
+	// sortOpt := bson.D{{"_id", sort}}
+	// option := options.Find().SetLimit(int64(first)).SetSort(sortOpt)
+	// cursor, _ := repo.post.Find(context.TODO(), filter, option)
+
+	sortOpt := bson.D{{"$sort", bson.D{{"_id", sort}}}}
+	limit := bson.D{{"$limit", int64(first)}}
+	match := bson.D{{"$match", filter}}
+	cursor, _ := repo.post.Aggregate(context.TODO(),
+		mongo.Pipeline{sortOpt, limit, match, lookupRoom, lookupRepost})
 
 	var posts gateway.Posts
 	cursor.All(context.TODO(), &posts)
@@ -125,7 +131,7 @@ func (repo *repo) PutPost(name string, avatar string, body string, parentID stri
 	}
 	repo.post.BulkWrite(context.TODO(), models, option)
 
-	return post.Entity()
+	return repo.GetPostByID(post.ID.Hex())
 }
 
 func (repo *repo) UpdateUpvoterIDs(postID string, accountID string, exist bool) {
