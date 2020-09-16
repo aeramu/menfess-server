@@ -126,7 +126,7 @@ func (repo *repo) PutPost(name string, avatar string, body string, parentID stri
 	option := options.BulkWrite().SetOrdered(false)
 	models := []mongo.WriteModel{
 		mongo.NewInsertOneModel().SetDocument(post),
-		mongo.NewUpdateOneModel().SetFilter(filter).SetUpdate(update).SetUpsert(true),
+		mongo.NewUpdateOneModel().SetFilter(filter).SetUpdate(update),
 	}
 	repo.post.BulkWrite(context.TODO(), models, option)
 
