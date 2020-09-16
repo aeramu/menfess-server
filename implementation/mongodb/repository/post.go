@@ -73,7 +73,7 @@ func (repo *repo) GetPostListByParentID(parentID string, first int, after string
 	limit := bson.D{{"$limit", int64(first)}}
 	match := bson.D{{"$match", filter}}
 	cursor, _ := repo.post.Aggregate(context.TODO(),
-		mongo.Pipeline{sortOpt, limit, match, lookupRoom, lookupRepost})
+		mongo.Pipeline{sortOpt, match, limit, lookupRoom, lookupRepost})
 
 	var posts gateway.Posts
 	cursor.All(context.TODO(), &posts)
@@ -108,7 +108,7 @@ func (repo *repo) GetPostListByRoomIDs(roomIDs []string, first int, after string
 	limit := bson.D{{"$limit", int64(first)}}
 	match := bson.D{{"$match", filter}}
 	cursor, _ := repo.post.Aggregate(context.TODO(),
-		mongo.Pipeline{sortOpt, limit, match, lookupRoom, lookupRepost})
+		mongo.Pipeline{sortOpt, match, limit, lookupRoom, lookupRepost})
 
 	var posts gateway.Posts
 	cursor.All(context.TODO(), &posts)
