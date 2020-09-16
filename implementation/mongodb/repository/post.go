@@ -11,13 +11,30 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var lookupRoom = bson.D{
+	{"$lookup", bson.D{
+		{"from", "room"},
+		{"localField", "roomID"},
+		{"foreignField", "_id"},
+		{"as", "room"},
+	}},
+}
+var lookupRepost = bson.D{
+	{"$lookup", bson.D{
+		{"from", "post"},
+		{"localField", "repostID"},
+		{"foreignField", "_id"},
+		{"as", "repost"},
+	}},
+}
+
 func (repo *repo) GetPostByID(hexID string) entity.Post {
 	id, _ := primitive.ObjectIDFromHex(hexID)
 
 	filter := bson.D{{"_id", id}}
 
 	match := bson.D{{"$match", filter}}
-	cursor, _ := repo.post.Aggregate(context.TODO(), mongo.Pipeline{match})
+	cursor, _ := repo.post.Aggregate(context.TODO(), mongo.Pipeline{match, lookupRoom, lookupRepost})
 
 	var posts []*gateway.Post
 	cursor.All(context.TODO(), &posts)
@@ -38,7 +55,6 @@ func (repo *repo) GetPostListByParentID(parentID string, first int, after string
 		comparator = "$gt"
 		sort = 1
 	}
-
 	filter := bson.D{
 		{"$and", bson.A{
 			bson.D{{"parentID", parentid}},
@@ -49,21 +65,16 @@ func (repo *repo) GetPostListByParentID(parentID string, first int, after string
 			},
 		}},
 	}
+
 	// sortOpt := bson.D{{"_id", sort}}
 	// option := options.Find().SetLimit(int64(first)).SetSort(sortOpt)
-	//TODO: lookup room dan repost dan parent?
 
-	// lookup := bson.D{
-	// 	{"$lookup", bson.D{
-	// 		{"from", "room"},
-	// 		{"localField", "roomID"},
-	// 		{"foreignField", "_id"},
-	// 		{"as", "room"},
-	// 	}},
-	// }
-
-	// cursor2, _ := repo.collection.Aggregate(context.TODO(), mongo.Pipeline{lookup})
-	cursor, _ := repo.post.Find(context.TODO(), filter, option)
+	// cursor, _ := repo.post.Find(context.TODO(), filter, option)
+	sortOpt := bson.D{{"$sort", bson.D{{"_id", sort}}}}
+	limit := bson.D{{"$limit", int64(first)}}
+	match := bson.D{{"$match", filter}}
+	cursor, _ := repo.post.Aggregate(context.TODO(),
+		mongo.Pipeline{sortOpt, limit, match, lookupRoom, lookupRepost})
 
 	var posts gateway.Posts
 	cursor.All(context.TODO(), &posts)
