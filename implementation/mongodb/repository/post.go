@@ -14,10 +14,14 @@ import (
 func (repo *repo) GetPostByID(hexID string) entity.Post {
 	id, _ := primitive.ObjectIDFromHex(hexID)
 
-	//TODO: aggregate
 	filter := bson.D{{"_id", id}}
-	var post gateway.Post
-	repo.post.FindOne(context.TODO(), filter).Decode(&post)
+
+	match := bson.D{{"$match", filter}}
+	cursor, _ := repo.post.Aggregate(context.TODO(), mongo.Pipeline{match})
+
+	var posts []*gateway.Post
+	cursor.All(context.TODO(), &posts)
+	post := posts[0]
 
 	if post.ID.IsZero() {
 		return nil
@@ -45,8 +49,8 @@ func (repo *repo) GetPostListByParentID(parentID string, first int, after string
 			},
 		}},
 	}
-	sortOpt := bson.D{{"_id", sort}}
-	option := options.Find().SetLimit(int64(first)).SetSort(sortOpt)
+	// sortOpt := bson.D{{"_id", sort}}
+	// option := options.Find().SetLimit(int64(first)).SetSort(sortOpt)
 	//TODO: lookup room dan repost dan parent?
 
 	// lookup := bson.D{
