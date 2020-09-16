@@ -6,6 +6,11 @@ type Room interface {
 	Name() string
 }
 
+type room struct {
+	id   string
+	name string
+}
+
 //RoomConstructor constructor
 type RoomConstructor struct {
 	ID   string
@@ -18,11 +23,6 @@ func (c RoomConstructor) New() Room {
 		id:   c.ID,
 		name: c.Name,
 	}
-}
-
-type room struct {
-	id   string
-	name string
 }
 
 func (r *room) ID() string {

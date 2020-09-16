@@ -7,18 +7,31 @@ type Post interface {
 	Name() string
 	Avatar() string
 	Body() string
+	Repost() Post
+	Room() Room
 	UpvoterIDs() map[string]bool
 	DownvoterIDs() map[string]bool
 	UpvoteCount() int
 	DownvoteCount() int
 	ReplyCount() int
-	ParentID() string
-	RepostID() string
-	RoomID() string
 	IsUpvoted(accountID string) bool
 	IsDownvoted(accountID string) bool
+
 	Upvote(accountID string) bool
 	Downvote(accountID string) bool
+}
+
+type post struct {
+	id           string
+	timestamp    int
+	name         string
+	avatar       string
+	body         string
+	upvoterIDs   map[string]bool
+	downvoterIDs map[string]bool
+	replyCount   int
+	repost       Post
+	room         Room
 }
 
 //PostConstructor constructor for Post entity
@@ -31,9 +44,8 @@ type PostConstructor struct {
 	UpvoterIDs   map[string]bool
 	DownvoterIDs map[string]bool
 	ReplyCount   int
-	ParentID     string
-	RepostID     string
-	RoomID       string
+	Repost       Post
+	Room         Room
 }
 
 //New construtor
@@ -53,24 +65,9 @@ func (c PostConstructor) New() Post {
 		upvoterIDs:   c.UpvoterIDs,
 		downvoterIDs: c.DownvoterIDs,
 		replyCount:   c.ReplyCount,
-		parentID:     c.ParentID,
-		repostID:     c.RepostID,
-		roomID:       c.RoomID,
+		repost:       c.Repost,
+		room:         c.Room,
 	}
-}
-
-type post struct {
-	id           string
-	timestamp    int
-	name         string
-	avatar       string
-	body         string
-	upvoterIDs   map[string]bool
-	downvoterIDs map[string]bool
-	replyCount   int
-	parentID     string
-	repostID     string
-	roomID       string
 }
 
 func (p *post) Upvote(accountID string) bool {
@@ -99,14 +96,11 @@ func (p *post) IsDownvoted(accountID string) bool {
 	_, ok := p.downvoterIDs[accountID]
 	return ok
 }
-func (p *post) RoomID() string {
-	return p.roomID
+func (p *post) Room() Room {
+	return p.room
 }
-func (p *post) RepostID() string {
-	return p.repostID
-}
-func (p *post) ParentID() string {
-	return p.parentID
+func (p *post) Repost() Post {
+	return p.repost
 }
 func (p *post) ReplyCount() int {
 	return p.replyCount
