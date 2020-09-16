@@ -19,10 +19,11 @@ func New() usecase.Repository {
 			"mongodb+srv://admin:admin@qiup-wrbox.mongodb.net/",
 		))
 	}
-	return &menfessRepo{
-		client:     client,
-		database:   client.Database("menfess"),
-		collection: client.Database("menfess").Collection("post"),
+	return &repo{
+		client: client,
+		db:     client.Database("menfess"),
+		post:   client.Database("menfess").Collection("post"),
+		room:   client.Database("menfess").Collection("room"),
 	}
 }
 
@@ -31,12 +32,13 @@ func Disconnect() {
 	client.Disconnect(context.TODO())
 }
 
-type menfessRepo struct {
-	client     *mongo.Client
-	database   *mongo.Database
-	collection *mongo.Collection
+type repo struct {
+	client *mongo.Client
+	db     *mongo.Database
+	post   *mongo.Collection
+	room   *mongo.Collection
 }
 
-func (repo *menfessRepo) NewID() string {
+func (repo *repo) NewID() string {
 	return primitive.NewObjectID().Hex()
 }
