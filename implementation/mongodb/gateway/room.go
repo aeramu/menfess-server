@@ -5,17 +5,17 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-//Room db model
+//Room extract model
 type Room struct {
 	ID     primitive.ObjectID `bson:"_id"`
 	Name   string
 	Avatar string
 }
 
-//Rooms arrat of room's db model
+//Rooms array of room
 type Rooms []*Room
 
-//Entity convert room db model to entity
+//Entity convert room to entity
 func (m *Room) Entity() entity.Room {
 	return entity.RoomConstructor{
 		ID:     m.ID.Hex(),
@@ -24,7 +24,7 @@ func (m *Room) Entity() entity.Room {
 	}.New()
 }
 
-//Entity convert array of room db model to entity
+//Entity convert array of room to entity
 func (rooms Rooms) Entity() []entity.Room {
 	var entityList []entity.Room
 	for _, room := range rooms {
