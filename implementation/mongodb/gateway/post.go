@@ -15,6 +15,7 @@ type Post struct {
 	ReplyCount   int             `bson:"replyCount"`
 	Repost       []Post          `bson:"repost"`
 	Room         []Room          `bson:"room"`
+	RepostRoom   []Room          `bson:"repostRoom"`
 }
 
 type Posts []*Post
@@ -22,6 +23,7 @@ type Posts []*Post
 func (m *Post) Entity() entity.Post {
 	var repost entity.Post = nil
 	if len(m.Repost) > 0 {
+		m.Repost[0].Room = m.RepostRoom
 		repost = m.Repost[0].Entity()
 	}
 	var room entity.Room = nil

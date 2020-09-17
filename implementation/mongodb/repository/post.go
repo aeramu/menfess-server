@@ -19,6 +19,8 @@ var lookupRoom = bson.D{
 		{"as", "room"},
 	}},
 }
+
+//TODO: lookup room si repost
 var lookupRepost = bson.D{
 	{"$lookup", bson.D{
 		{"from", "post"},
@@ -28,13 +30,22 @@ var lookupRepost = bson.D{
 	}},
 }
 
+var lookupRepostRoom = bson.D{
+	{"$lookup", bson.D{
+		{"from", "room"},
+		{"localField", "repost.roomID"},
+		{"foreignField", "_id"},
+		{"as", "repostRoom"},
+	}},
+}
+
 func (repo *repo) GetPostByID(hexID string) entity.Post {
 	id, _ := primitive.ObjectIDFromHex(hexID)
 
 	filter := bson.D{{"_id", id}}
 
 	match := bson.D{{"$match", filter}}
-	cursor, _ := repo.post.Aggregate(context.TODO(), mongo.Pipeline{match, lookupRoom, lookupRepost})
+	cursor, _ := repo.post.Aggregate(context.TODO(), mongo.Pipeline{match, lookupRoom, lookupRepost, lookupRepostRoom})
 
 	var posts []*gateway.Post
 	cursor.All(context.TODO(), &posts)
@@ -65,15 +76,11 @@ func (repo *repo) GetPostListByParentID(parentID string, first int, after string
 		}},
 	}
 
-	// sortOpt := bson.D{{"_id", sort}}
-	// option := options.Find().SetLimit(int64(first)).SetSort(sortOpt)
-
-	// cursor, _ := repo.post.Find(context.TODO(), filter, option)
 	sortOpt := bson.D{{"$sort", bson.D{{"_id", sort}}}}
 	limit := bson.D{{"$limit", int64(first)}}
 	match := bson.D{{"$match", filter}}
 	cursor, _ := repo.post.Aggregate(context.TODO(),
-		mongo.Pipeline{sortOpt, match, limit, lookupRoom, lookupRepost})
+		mongo.Pipeline{sortOpt, match, limit, lookupRoom, lookupRepost, lookupRepostRoom})
 
 	var posts gateway.Posts
 	cursor.All(context.TODO(), &posts)
@@ -89,7 +96,6 @@ func (repo *repo) GetPostListByRoomIDs(roomIDs []string, first int, after string
 		comparator = "$gt"
 		sort = 1
 	}
-
 	filter := bson.D{
 		{"$and", bson.A{
 			bson.D{{"roomID", bson.D{
@@ -100,15 +106,12 @@ func (repo *repo) GetPostListByRoomIDs(roomIDs []string, first int, after string
 			}}},
 		}},
 	}
-	// sortOpt := bson.D{{"_id", sort}}
-	// option := options.Find().SetLimit(int64(first)).SetSort(sortOpt)
-	// cursor, _ := repo.post.Find(context.TODO(), filter, option)
 
 	sortOpt := bson.D{{"$sort", bson.D{{"_id", sort}}}}
 	limit := bson.D{{"$limit", int64(first)}}
 	match := bson.D{{"$match", filter}}
 	cursor, _ := repo.post.Aggregate(context.TODO(),
-		mongo.Pipeline{sortOpt, match, limit, lookupRoom, lookupRepost})
+		mongo.Pipeline{sortOpt, match, limit, lookupRoom, lookupRepost, lookupRepostRoom})
 
 	var posts gateway.Posts
 	cursor.All(context.TODO(), &posts)
