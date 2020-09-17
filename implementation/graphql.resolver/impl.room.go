@@ -7,15 +7,6 @@ import (
 
 //MenfessRoomList graphql
 func (r *Resolver) MenfessRoomList() *MenfessRoomConnectionResolver {
-	// room1 := entity.MenfessPostConstructor{
-	// 	ID:   "5ef89baaec8ff2af8b9934c1",
-	// 	Name: "ITB",
-	// }.New()
-	// room2 := entity.MenfessPostConstructor{
-	// 	ID:   "5efadcbdc0245024fd758d02",
-	// 	Name: "UI",
-	// }.New()
-	// roomList := []entity.MenfessRoom{room1, room2}
 	roomList := r.Interactor.RoomList()
 	return &MenfessRoomConnectionResolver{roomList, r}
 }
