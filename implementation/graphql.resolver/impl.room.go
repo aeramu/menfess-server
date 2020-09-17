@@ -5,16 +5,10 @@ import (
 	"github.com/graph-gophers/graphql-go"
 )
 
-//MenfessRoomList graphql
-func (r *Resolver) MenfessRoomList() *MenfessRoomConnectionResolver {
-	roomList := r.Interactor.RoomList()
-	return &MenfessRoomConnectionResolver{roomList, r}
-}
-
 //MenfessRoomResolver graphql
 type MenfessRoomResolver struct {
 	room entity.Room
-	pr   *Resolver
+	pr   *resolver
 }
 
 //ID get
@@ -35,7 +29,7 @@ func (r *MenfessRoomResolver) Avatar() string {
 // MenfessRoomConnectionResolver graphql
 type MenfessRoomConnectionResolver struct {
 	menfessRoomList []entity.Room
-	pr              *Resolver
+	pr              *resolver
 }
 
 // Edges graphql

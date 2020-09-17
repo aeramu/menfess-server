@@ -8,25 +8,47 @@ import (
 )
 
 //Resolver graphql
-type Resolver struct {
+type Resolver interface {
+	MenfessPost(args struct {
+		ID graphql.ID
+	}) *postResolver
+	MenfessPostList(args struct {
+		First *int32
+		After *graphql.ID
+		Sort  *bool
+	}) *postConnectionResolver
+	MenfessPostRooms(args struct {
+		IDs   []graphql.ID
+		First *int32
+		After *graphql.ID
+	}) *postConnectionResolver
+	MenfessRoomList() *MenfessRoomConnectionResolver
+	UpvoteMenfessPost(args struct {
+		PostID graphql.ID
+	}) *postResolver
+	DownvoteMenfessPost(args struct {
+		PostID graphql.ID
+	}) *postResolver
+	MenfessAvatarList() []string
+}
+
+type resolver struct {
 	Interactor usecase.Interactor
 	Context    context.Context
 }
 
-// MenfessPost graphql
-func (r *Resolver) MenfessPost(args struct {
+func (r *resolver) MenfessPost(args struct {
 	ID graphql.ID
-}) *MenfessPostResolver {
+}) *postResolver {
 	post := r.Interactor.Post(string(args.ID))
-	return &MenfessPostResolver{post, r}
+	return &postResolver{post, r}
 }
 
-// MenfessPostList graphql
-func (r *Resolver) MenfessPostList(args struct {
+func (r *resolver) MenfessPostList(args struct {
 	First *int32
 	After *graphql.ID
 	Sort  *bool
-}) *MenfessPostConnectionResolver {
+}) *postConnectionResolver {
 	first := 20
 	if args.First != nil {
 		first = int(*args.First)
@@ -36,15 +58,14 @@ func (r *Resolver) MenfessPostList(args struct {
 		after = string(*args.After)
 	}
 	postList := r.Interactor.PostFeed(first, after)
-	return &MenfessPostConnectionResolver{postList, r}
+	return &postConnectionResolver{postList, r}
 }
 
-//MenfessPostRooms graphql
-func (r *Resolver) MenfessPostRooms(args struct {
+func (r *resolver) MenfessPostRooms(args struct {
 	IDs   []graphql.ID
 	First *int32
 	After *graphql.ID
-}) *MenfessPostConnectionResolver {
+}) *postConnectionResolver {
 	first := 20
 	if args.First != nil {
 		first = int(*args.First)
@@ -58,18 +79,22 @@ func (r *Resolver) MenfessPostRooms(args struct {
 		roomIDs = append(roomIDs, string(id))
 	}
 	postList := r.Interactor.PostRooms(roomIDs, first, after)
-	return &MenfessPostConnectionResolver{postList, r}
+	return &postConnectionResolver{postList, r}
 }
 
-// PostMenfessPost graphql
-func (r *Resolver) PostMenfessPost(args struct {
+func (r *resolver) MenfessRoomList() *MenfessRoomConnectionResolver {
+	roomList := r.Interactor.RoomList()
+	return &MenfessRoomConnectionResolver{roomList, r}
+}
+
+func (r *resolver) PostMenfessPost(args struct {
 	Name     string
 	Avatar   string
 	Body     string
 	ParentID *graphql.ID
 	RepostID *graphql.ID
 	RoomID   *graphql.ID
-}) *MenfessPostResolver {
+}) *postResolver {
 	parentID := ""
 	if args.ParentID != nil {
 		parentID = string(*args.ParentID)
@@ -83,29 +108,26 @@ func (r *Resolver) PostMenfessPost(args struct {
 		roomID = string(*args.RoomID)
 	}
 	post := r.Interactor.PostPost(args.Name, args.Avatar, args.Body, parentID, repostID, roomID)
-	return &MenfessPostResolver{post, r}
+	return &postResolver{post, r}
 }
 
-//UpvoteMenfessPost graphql
-func (r *Resolver) UpvoteMenfessPost(args struct {
+func (r *resolver) UpvoteMenfessPost(args struct {
 	PostID graphql.ID
-}) *MenfessPostResolver {
+}) *postResolver {
 	accountID := r.Context.Value("request").(map[string]string)["id"]
 	post := r.Interactor.UpvotePost(accountID, string(args.PostID))
-	return &MenfessPostResolver{post, r}
+	return &postResolver{post, r}
 }
 
-//DownvoteMenfessPost graphql
-func (r *Resolver) DownvoteMenfessPost(args struct {
+func (r *resolver) DownvoteMenfessPost(args struct {
 	PostID graphql.ID
-}) *MenfessPostResolver {
+}) *postResolver {
 	accountID := r.Context.Value("request").(map[string]string)["id"]
 	post := r.Interactor.DownvotePost(accountID, string(args.PostID))
-	return &MenfessPostResolver{post, r}
+	return &postResolver{post, r}
 }
 
-// MenfessAvatarList graphql
-func (r *Resolver) MenfessAvatarList() []string {
+func (r *resolver) MenfessAvatarList() []string {
 	avatarList := []string{
 		"https://qiup-image.s3.amazonaws.com/avatar/avatar.jpg",
 		"https://qiup-image.s3.amazonaws.com/avatar/batman.jpg",
