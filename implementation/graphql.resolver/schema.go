@@ -1,17 +1,5 @@
 package resolver
 
-import (
-	"context"
-
-	"github.com/aeramu/menfess-server/usecase"
-)
-
-//Resolver graphql
-type Resolver struct {
-	Interactor usecase.Interactor
-	Context    context.Context
-}
-
 //Schema grahql
 var Schema = `
   	schema{
