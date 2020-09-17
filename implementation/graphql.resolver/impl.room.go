@@ -27,6 +27,11 @@ func (r *MenfessRoomResolver) Name() string {
 	return r.room.Name()
 }
 
+// Avatar graphql
+func (r *MenfessRoomResolver) Avatar() string {
+	return r.room.Avatar()
+}
+
 // MenfessRoomConnectionResolver graphql
 type MenfessRoomConnectionResolver struct {
 	menfessRoomList []entity.Room

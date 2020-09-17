@@ -49,6 +49,7 @@ var Schema = `
 	type MenfessRoom{
 		id: ID!
 		name: String!
+		avatar: String!
 	}
 	type MenfessPostConnection{
 		edges: [MenfessPost]!
