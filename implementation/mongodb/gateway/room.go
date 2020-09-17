@@ -6,16 +6,18 @@ import (
 )
 
 type Room struct {
-	ID   primitive.ObjectID `bson:"_id"`
-	Name string
+	ID     primitive.ObjectID `bson:"_id"`
+	Name   string
+	Avatar string
 }
 
 type Rooms []*Room
 
 func (m *Room) Entity() entity.Room {
 	return entity.RoomConstructor{
-		ID:   m.ID.Hex(),
-		Name: m.Name,
+		ID:     m.ID.Hex(),
+		Name:   m.Name,
+		Avatar: m.Avatar,
 	}.New()
 }
 
