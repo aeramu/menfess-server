@@ -121,7 +121,7 @@ func (repo *repo) GetPostListByRoomIDs(roomIDs []string, first int, after string
 }
 
 func (repo *repo) PutPost(name string, avatar string, body string, parentID string, repostID string, roomID string) entity.Post {
-	post := gateway.NewPost(name, avatar, body, parentID, repostID, roomID)
+	post := gateway.NewPostModel(name, avatar, body, parentID, repostID, roomID)
 	filter := bson.D{{"_id", post.ParentID}}
 	update := bson.D{
 		{"$inc", bson.D{

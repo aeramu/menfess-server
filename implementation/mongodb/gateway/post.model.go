@@ -4,6 +4,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+//PostModel post with db format
 type PostModel struct {
 	ID           primitive.ObjectID `bson:"_id"`
 	Name         string
@@ -17,7 +18,8 @@ type PostModel struct {
 	RoomID       primitive.ObjectID `bson:"roomID"`
 }
 
-func NewPost(name string, avatar string, body string, parentID string, repostID string, roomID string) *PostModel {
+//NewPostModel create new post with db format
+func NewPostModel(name string, avatar string, body string, parentID string, repostID string, roomID string) *PostModel {
 	parentid, _ := primitive.ObjectIDFromHex(parentID)
 	repostid, _ := primitive.ObjectIDFromHex(repostID)
 	roomid, _ := primitive.ObjectIDFromHex(roomID)

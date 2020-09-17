@@ -5,6 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+//Post extraction struct from db
 type Post struct {
 	ID           primitive.ObjectID `bson:"_id"`
 	Name         string
@@ -18,8 +19,10 @@ type Post struct {
 	RepostRoom   []Room          `bson:"repostRoom"`
 }
 
+//Posts list of post for entity method
 type Posts []*Post
 
+//Entity convert post to entity
 func (m *Post) Entity() entity.Post {
 	var repost entity.Post = nil
 	if len(m.Repost) > 0 {
@@ -45,6 +48,7 @@ func (m *Post) Entity() entity.Post {
 	}.New()
 }
 
+//Entity convert array of post to entity
 func (posts Posts) Entity() []entity.Post {
 	var entityList []entity.Post
 	for _, post := range posts {
