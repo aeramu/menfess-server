@@ -21,7 +21,7 @@ func (repo *repo) GetRoomList() []entity.Room {
 func (repo *repo) GetRoom(id string) entity.Room {
 	objectID, _ := primitive.ObjectIDFromHex(id)
 
-	filter := bson.D{{"_id", objectID}}
+	filter := d("_id", objectID)
 	var room gateway.Room
 	repo.room.FindOne(context.TODO(), filter).Decode(&room)
 

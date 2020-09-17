@@ -14,39 +14,33 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var lookupRoom = bson.D{
-	{"$lookup", bson.D{
-		{"from", "room"},
-		{"localField", "roomID"},
-		{"foreignField", "_id"},
-		{"as", "room"},
-	}},
-}
+var lookupRoom = d("$lookup", bson.D{
+	e("from", "room"),
+	e("localField", "roomID"),
+	e("foreignField", "_id"),
+	e("as", "room"),
+})
 
-var lookupRepost = bson.D{
-	{"$lookup", bson.D{
-		{"from", "post"},
-		{"localField", "repostID"},
-		{"foreignField", "_id"},
-		{"as", "repost"},
-	}},
-}
+var lookupRepost = d("$lookup", bson.D{
+	e("from", "post"),
+	e("localField", "repostID"),
+	e("foreignField", "_id"),
+	e("as", "repost"),
+})
 
-var lookupRepostRoom = bson.D{
-	{"$lookup", bson.D{
-		{"from", "room"},
-		{"localField", "repost.roomID"},
-		{"foreignField", "_id"},
-		{"as", "repostRoom"},
-	}},
-}
+var lookupRepostRoom = d("$lookup", bson.D{
+	e("from", "room"),
+	e("localField", "repost.roomID"),
+	e("foreignField", "_id"),
+	e("as", "repostRoom"),
+})
 
 func (repo *repo) GetPostByID(hexID string) entity.Post {
 	id, _ := primitive.ObjectIDFromHex(hexID)
 
-	filter := bson.D{{"_id", id}}
+	filter := d("_id", id)
 
-	match := bson.D{{"$match", filter}}
+	match := d("$match", filter)
 	cursor, _ := repo.post.Aggregate(context.TODO(), mongo.Pipeline{match, lookupRoom, lookupRepost, lookupRepostRoom})
 
 	var posts []*gateway.Post
@@ -67,20 +61,14 @@ func (repo *repo) GetPostListByParentID(parentID string, first int, after string
 		comparator = "$gt"
 		sort = 1
 	}
-	filter := bson.D{
-		{"$and", bson.A{
-			bson.D{{"parentID", parentid}},
-			bson.D{
-				{"_id", bson.D{
-					{comparator, afterid},
-				}},
-			},
-		}},
-	}
+	filter := d("$and", bson.A{
+		d("parentID", parentid),
+		d("_id", d(comparator, afterid)),
+	})
 
-	sortOpt := bson.D{{"$sort", bson.D{{"_id", sort}}}}
-	limit := bson.D{{"$limit", int64(first)}}
-	match := bson.D{{"$match", filter}}
+	sortOpt := d("$sort", d("_id", sort))
+	limit := d("$limit", int64(first))
+	match := d("$match", filter)
 	cursor, _ := repo.post.Aggregate(context.TODO(),
 		mongo.Pipeline{sortOpt, match, limit, lookupRoom, lookupRepost, lookupRepostRoom})
 
@@ -98,20 +86,14 @@ func (repo *repo) GetPostListByRoomIDs(roomIDs []string, first int, after string
 		comparator = "$gt"
 		sort = 1
 	}
-	filter := bson.D{
-		{"$and", bson.A{
-			bson.D{{"roomID", bson.D{
-				{"$in", roomids},
-			}}},
-			bson.D{{"_id", bson.D{
-				{comparator, afterid},
-			}}},
-		}},
-	}
+	filter := d("$and", bson.A{
+		d("roomID", d("$in", roomids)),
+		d("_id", d(comparator, afterid)),
+	})
 
-	sortOpt := bson.D{{"$sort", bson.D{{"_id", sort}}}}
-	limit := bson.D{{"$limit", int64(first)}}
-	match := bson.D{{"$match", filter}}
+	sortOpt := d("$sort", d("_id", sort))
+	limit := d("$limit", int64(first))
+	match := d("$match", filter)
 	cursor, _ := repo.post.Aggregate(context.TODO(),
 		mongo.Pipeline{sortOpt, match, limit, lookupRoom, lookupRepost, lookupRepostRoom})
 
@@ -122,12 +104,8 @@ func (repo *repo) GetPostListByRoomIDs(roomIDs []string, first int, after string
 
 func (repo *repo) PutPost(name string, avatar string, body string, parentID string, repostID string, roomID string) entity.Post {
 	post := gateway.NewPostModel(name, avatar, body, parentID, repostID, roomID)
-	filter := bson.D{{"_id", post.ParentID}}
-	update := bson.D{
-		{"$inc", bson.D{
-			{"replyCount", 1},
-		}},
-	}
+	filter := d("_id", post.ParentID)
+	update := d("$inc", d("replyCount", 1))
 	option := options.BulkWrite().SetOrdered(false)
 	models := []mongo.WriteModel{
 		mongo.NewInsertOneModel().SetDocument(post),
@@ -145,12 +123,9 @@ func (repo *repo) UpdateUpvoterIDs(postID string, accountID string, exist bool) 
 	}
 	postid, _ := primitive.ObjectIDFromHex(postID)
 
-	filter := bson.D{{"_id", postid}}
-	update := bson.D{
-		{operator, bson.D{
-			{"upvoterIDs." + accountID, true},
-		}},
-	}
+	filter := d("_id", postid)
+	update := d(operator, d("upvoterIDs."+accountID, true))
+
 	repo.post.UpdateOne(context.TODO(), filter, update)
 }
 
@@ -161,11 +136,8 @@ func (repo *repo) UpdateDownvoterIDs(postID string, accountID string, exist bool
 	}
 	postid, _ := primitive.ObjectIDFromHex(postID)
 
-	filter := bson.D{{"_id", postid}}
-	update := bson.D{
-		{operator, bson.D{
-			{"downvoterIDs." + accountID, true},
-		}},
-	}
+	filter := d("_id", postid)
+	update := d(operator, d("downvoterIDs."+accountID, true))
+
 	repo.post.UpdateOne(context.TODO(), filter, update)
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/aeramu/menfess-server/usecase"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -35,4 +36,18 @@ type repo struct {
 	db     *mongo.Database
 	post   *mongo.Collection
 	room   *mongo.Collection
+}
+
+func e(key string, value interface{}) bson.E {
+	return bson.E{
+		Key:   key,
+		Value: value,
+	}
+}
+
+func d(key string, value interface{}) bson.D {
+	return bson.D{{
+		Key:   key,
+		Value: value,
+	}}
 }
