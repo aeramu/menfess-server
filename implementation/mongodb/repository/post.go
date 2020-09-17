@@ -1,5 +1,8 @@
 package repository
 
+//TODO: project reply count and delete reply count on db model
+//TODO: make bson.D function or aggregation stage function
+
 import (
 	"context"
 
@@ -20,7 +23,6 @@ var lookupRoom = bson.D{
 	}},
 }
 
-//TODO: lookup room si repost
 var lookupRepost = bson.D{
 	{"$lookup", bson.D{
 		{"from", "post"},

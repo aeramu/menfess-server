@@ -9,6 +9,7 @@ func (i *interactor) Post(id string) entity.Post {
 }
 
 func (i *interactor) PostFeed(first int, after string) []entity.Post {
+	//TODO: first after default value in interactor, not implementation
 	postList := i.repo.GetPostListByParentID("", first, after, false)
 	return postList
 }
