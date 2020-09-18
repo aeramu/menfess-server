@@ -1,7 +1,42 @@
 package resolver
 
-//Schema grahql
-var Schema = `
+import (
+	"context"
+	"net/http"
+
+	"github.com/aeramu/menfess-server/usecase"
+	"github.com/graph-gophers/graphql-go"
+	"github.com/graph-gophers/graphql-go/relay"
+)
+
+//Handler interface
+type Handler interface {
+	http.Handler
+	Response(ctx context.Context, query string, operation string, variables map[string]interface{}) *graphql.Response
+}
+
+//New Handler for graphql
+func New(ctx context.Context, i usecase.Interactor) Handler {
+	schema := graphql.MustParseSchema(schemaString, &resolver{
+		Context:    ctx,
+		Interactor: i,
+	})
+	return &handler{&relay.Handler{Schema: schema}}
+}
+
+type handler struct {
+	relay *relay.Handler
+}
+
+func (h handler) Response(ctx context.Context, query string, operation string, variables map[string]interface{}) *graphql.Response {
+	return h.relay.Schema.Exec(ctx, query, operation, variables)
+}
+
+func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	h.relay.ServeHTTP(w, r)
+}
+
+var schemaString = `
   	schema{
 		query: Query
 		mutation: Mutation

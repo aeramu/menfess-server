@@ -4,12 +4,11 @@ import (
 	"context"
 	"encoding/json"
 
-	resolver "github.com/aeramu/menfess-server/implementation/graphql.resolver"
-	"github.com/aeramu/menfess-server/implementation/mongodb/repository"
+	graphql "github.com/aeramu/menfess-server/implementation/graphql.handler"
+	mongodb "github.com/aeramu/menfess-server/implementation/mongodb/repository"
 	"github.com/aeramu/menfess-server/usecase"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/graph-gophers/graphql-go"
 )
 
 func main() {
@@ -28,15 +27,14 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 	//add token from header
 	context := context.WithValue(ctx, "request", request.Headers)
 
-	//graphql execution
-	schema := graphql.MustParseSchema(resolver.Schema, &resolver.Resolver{
-		Context: context,
-		Interactor: usecase.InteractorConstructor{
-			Repository: repository.New(),
-		}.New(),
-	})
-	defer repository.Disconnect()
-	response := schema.Exec(context, parameter.Query, parameter.OperationName, parameter.Variables)
+	repository := mongodb.New()
+	defer mongodb.Disconnect()
+	interactor := usecase.InteractorConstructor{
+		Repository: repository,
+	}.New()
+	handler := graphql.New(context, interactor)
+
+	response := handler.Response(context, parameter.Query, parameter.OperationName, parameter.Variables)
 	responseJSON, _ := json.Marshal(response)
 
 	//response

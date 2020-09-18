@@ -3,6 +3,7 @@ module github.com/aeramu/menfess-server
 go 1.15
 
 require (
+	github.com/aeramu/qiup-server v0.0.0-20200913092553-b03bd755bc9e
 	github.com/aws/aws-lambda-go v1.19.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/friendsofgo/graphiql v0.2.2

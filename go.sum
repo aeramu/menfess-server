@@ -1,4 +1,6 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/aeramu/qiup-server v0.0.0-20200913092553-b03bd755bc9e h1:27CJ1Z3xXqmklZfmexzJVTtxysPQNhCOyX346eY0BdU=
+github.com/aeramu/qiup-server v0.0.0-20200913092553-b03bd755bc9e/go.mod h1:m6f1HCBB11OyNbDY7tBRMErmQDte8EA9bNSWAhvj7EU=
 github.com/aws/aws-lambda-go v1.19.1 h1:5iUHbIZ2sG6Yq/J1IN3sWm3+vAB1CWwhI21NffLNuNI=
 github.com/aws/aws-lambda-go v1.19.1/go.mod h1:jJmlefzPfGnckuHdXX7/80O3BvUUi12XOkbv4w9SGLU=
 github.com/aws/aws-sdk-go v1.29.15 h1:0ms/213murpsujhsnxnNKNeVouW60aJqSd992Ks3mxs=
