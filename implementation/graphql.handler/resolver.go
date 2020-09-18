@@ -22,7 +22,7 @@ type Resolver interface {
 		First *int32
 		After *graphql.ID
 	}) PostConnection
-	MenfessRoomList() *MenfessRoomConnectionResolver
+	MenfessRoomList() RoomConnection
 	UpvoteMenfessPost(args struct {
 		PostID graphql.ID
 	}) Post
@@ -82,9 +82,9 @@ func (r *resolver) MenfessPostRooms(args struct {
 	return &postConnection{postList, r}
 }
 
-func (r *resolver) MenfessRoomList() *MenfessRoomConnectionResolver {
+func (r *resolver) MenfessRoomList() RoomConnection {
 	roomList := r.Interactor.RoomList()
-	return &MenfessRoomConnectionResolver{roomList, r}
+	return &roomConnection{roomList, r}
 }
 
 func (r *resolver) PostMenfessPost(args struct {
