@@ -8,14 +8,13 @@ type PostConnection interface {
 	PageInfo() PageInfo
 }
 
-// MenfessPostConnectionResolver graphql
-type postConnectionResolver struct {
+type postConnection struct {
 	menfessPostList []entity.Post
 	pr              *resolver
 }
 
 // Edges graphql
-func (r *postConnectionResolver) Edges() []Post {
+func (r *postConnection) Edges() []Post {
 	var menfessPostResolverList []Post
 	for _, elem := range r.menfessPostList {
 		menfessPostResolverList = append(menfessPostResolverList, &post{elem, r.pr})
@@ -24,7 +23,7 @@ func (r *postConnectionResolver) Edges() []Post {
 }
 
 // PageInfo graphql
-func (r *postConnectionResolver) PageInfo() PageInfo {
+func (r *postConnection) PageInfo() PageInfo {
 	var nodeList []interface{ ID() string }
 	for _, node := range r.menfessPostList {
 		nodeList = append(nodeList, node)

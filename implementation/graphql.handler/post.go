@@ -25,7 +25,7 @@ type Post interface {
 		After  *graphql.ID
 		Before *graphql.ID
 		Sort   *int32
-	}) *postConnectionResolver
+	}) PostConnection
 }
 
 // post graphql
@@ -113,12 +113,12 @@ func (r *post) Child(args struct {
 	After  *graphql.ID
 	Before *graphql.ID
 	Sort   *int32
-}) *postConnectionResolver {
+}) PostConnection {
 	first := 20
 	if args.First != nil {
 		first = int(*args.First)
 	}
 	after := "000000000000000000000000"
 	postList := r.pr.Interactor.PostChild(r.post.ID(), first, after)
-	return &postConnectionResolver{postList, r.pr}
+	return &postConnection{postList, r.pr}
 }

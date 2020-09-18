@@ -16,12 +16,12 @@ type Resolver interface {
 		First *int32
 		After *graphql.ID
 		Sort  *bool
-	}) *postConnectionResolver
+	}) PostConnection
 	MenfessPostRooms(args struct {
 		IDs   []graphql.ID
 		First *int32
 		After *graphql.ID
-	}) *postConnectionResolver
+	}) PostConnection
 	MenfessRoomList() *MenfessRoomConnectionResolver
 	UpvoteMenfessPost(args struct {
 		PostID graphql.ID
@@ -48,7 +48,7 @@ func (r *resolver) MenfessPostList(args struct {
 	First *int32
 	After *graphql.ID
 	Sort  *bool
-}) *postConnectionResolver {
+}) PostConnection {
 	first := 20
 	if args.First != nil {
 		first = int(*args.First)
@@ -58,14 +58,14 @@ func (r *resolver) MenfessPostList(args struct {
 		after = string(*args.After)
 	}
 	postList := r.Interactor.PostFeed(first, after)
-	return &postConnectionResolver{postList, r}
+	return &postConnection{postList, r}
 }
 
 func (r *resolver) MenfessPostRooms(args struct {
 	IDs   []graphql.ID
 	First *int32
 	After *graphql.ID
-}) *postConnectionResolver {
+}) PostConnection {
 	first := 20
 	if args.First != nil {
 		first = int(*args.First)
@@ -79,7 +79,7 @@ func (r *resolver) MenfessPostRooms(args struct {
 		roomIDs = append(roomIDs, string(id))
 	}
 	postList := r.Interactor.PostRooms(roomIDs, first, after)
-	return &postConnectionResolver{postList, r}
+	return &postConnection{postList, r}
 }
 
 func (r *resolver) MenfessRoomList() *MenfessRoomConnectionResolver {
