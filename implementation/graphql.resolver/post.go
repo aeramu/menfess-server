@@ -5,39 +5,62 @@ import (
 	"github.com/graph-gophers/graphql-go"
 )
 
-// postResolver graphql
-type postResolver struct {
+//Post grahql
+type Post interface {
+	ID() graphql.ID
+	Timestamp() int32
+	Name() string
+	Avatar() string
+	Body() string
+	Room() string
+	ReplyCount() int32
+	UpvoteCount() int32
+	DownvoteCount() int32
+	Upvoted() bool
+	Downvoted() bool
+	Parent() Post
+	Repost() Post
+	Child(args struct {
+		First  *int32
+		After  *graphql.ID
+		Before *graphql.ID
+		Sort   *int32
+	}) *postConnectionResolver
+}
+
+// post graphql
+type post struct {
 	post entity.Post
 	pr   *resolver
 }
 
 // ID graphql
-func (r *postResolver) ID() graphql.ID {
+func (r post) ID() graphql.ID {
 	return graphql.ID(r.post.ID())
 }
 
 // Timestamp graphql
-func (r *postResolver) Timestamp() int32 {
+func (r post) Timestamp() int32 {
 	return int32(r.post.Timestamp())
 }
 
 // Name graphql
-func (r *postResolver) Name() string {
+func (r post) Name() string {
 	return r.post.Name()
 }
 
 // Avatar graphql
-func (r *postResolver) Avatar() string {
+func (r post) Avatar() string {
 	return r.post.Avatar()
 }
 
 // Body graphql
-func (r *postResolver) Body() string {
+func (r post) Body() string {
 	return r.post.Body()
 }
 
 //Room graphql
-func (r *postResolver) Room() string {
+func (r post) Room() string {
 	if r.post.Room() == nil {
 		return "General"
 	}
@@ -45,47 +68,47 @@ func (r *postResolver) Room() string {
 }
 
 // ReplyCount graphql
-func (r *postResolver) ReplyCount() int32 {
+func (r *post) ReplyCount() int32 {
 	return int32(r.post.ReplyCount())
 }
 
 // UpvoteCount graphql
-func (r *postResolver) UpvoteCount() int32 {
+func (r *post) UpvoteCount() int32 {
 	return int32(r.post.UpvoteCount())
 }
 
 // DownvoteCount graphql
-func (r *postResolver) DownvoteCount() int32 {
+func (r *post) DownvoteCount() int32 {
 	return int32(r.post.DownvoteCount())
 }
 
 //Upvoted bool
-func (r *postResolver) Upvoted() bool {
+func (r *post) Upvoted() bool {
 	accountID := r.pr.Context.Value("request").(map[string]string)["id"]
 	return r.post.IsUpvoted(accountID)
 }
 
 //Downvoted bool
-func (r *postResolver) Downvoted() bool {
+func (r *post) Downvoted() bool {
 	accountID := r.pr.Context.Value("request").(map[string]string)["id"]
 	return r.post.IsDownvoted(accountID)
 }
 
 // Parent graphql
-func (r *postResolver) Parent() *postResolver {
+func (r *post) Parent() Post {
 	return nil
 }
 
 //Repost graphql
-func (r *postResolver) Repost() *postResolver {
+func (r *post) Repost() Post {
 	if r.post.Repost() == nil {
 		return nil
 	}
-	return &postResolver{r.post.Repost(), r.pr}
+	return &post{r.post.Repost(), r.pr}
 }
 
 // Child graphql
-func (r *postResolver) Child(args struct {
+func (r *post) Child(args struct {
 	First  *int32
 	After  *graphql.ID
 	Before *graphql.ID
@@ -98,28 +121,4 @@ func (r *postResolver) Child(args struct {
 	after := "000000000000000000000000"
 	postList := r.pr.Interactor.PostChild(r.post.ID(), first, after)
 	return &postConnectionResolver{postList, r.pr}
-}
-
-// MenfessPostConnectionResolver graphql
-type postConnectionResolver struct {
-	menfessPostList []entity.Post
-	pr              *resolver
-}
-
-// Edges graphql
-func (r *postConnectionResolver) Edges() []*postResolver {
-	var menfessPostResolverList []*postResolver
-	for _, post := range r.menfessPostList {
-		menfessPostResolverList = append(menfessPostResolverList, &postResolver{post, r.pr})
-	}
-	return menfessPostResolverList
-}
-
-// PageInfo graphql
-func (r *postConnectionResolver) PageInfo() *PageInfoResolver {
-	var nodeList []node
-	for _, node := range r.menfessPostList {
-		nodeList = append(nodeList, node)
-	}
-	return &PageInfoResolver{nodeList}
 }

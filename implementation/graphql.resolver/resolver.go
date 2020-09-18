@@ -11,7 +11,7 @@ import (
 type Resolver interface {
 	MenfessPost(args struct {
 		ID graphql.ID
-	}) *postResolver
+	}) Post
 	MenfessPostList(args struct {
 		First *int32
 		After *graphql.ID
@@ -25,10 +25,10 @@ type Resolver interface {
 	MenfessRoomList() *MenfessRoomConnectionResolver
 	UpvoteMenfessPost(args struct {
 		PostID graphql.ID
-	}) *postResolver
+	}) Post
 	DownvoteMenfessPost(args struct {
 		PostID graphql.ID
-	}) *postResolver
+	}) Post
 	MenfessAvatarList() []string
 }
 
@@ -39,9 +39,9 @@ type resolver struct {
 
 func (r *resolver) MenfessPost(args struct {
 	ID graphql.ID
-}) *postResolver {
-	post := r.Interactor.Post(string(args.ID))
-	return &postResolver{post, r}
+}) Post {
+	p := r.Interactor.Post(string(args.ID))
+	return &post{p, r}
 }
 
 func (r *resolver) MenfessPostList(args struct {
@@ -94,7 +94,7 @@ func (r *resolver) PostMenfessPost(args struct {
 	ParentID *graphql.ID
 	RepostID *graphql.ID
 	RoomID   *graphql.ID
-}) *postResolver {
+}) Post {
 	parentID := ""
 	if args.ParentID != nil {
 		parentID = string(*args.ParentID)
@@ -107,24 +107,24 @@ func (r *resolver) PostMenfessPost(args struct {
 	if args.RoomID != nil {
 		roomID = string(*args.RoomID)
 	}
-	post := r.Interactor.PostPost(args.Name, args.Avatar, args.Body, parentID, repostID, roomID)
-	return &postResolver{post, r}
+	p := r.Interactor.PostPost(args.Name, args.Avatar, args.Body, parentID, repostID, roomID)
+	return &post{p, r}
 }
 
 func (r *resolver) UpvoteMenfessPost(args struct {
 	PostID graphql.ID
-}) *postResolver {
+}) Post {
 	accountID := r.Context.Value("request").(map[string]string)["id"]
-	post := r.Interactor.UpvotePost(accountID, string(args.PostID))
-	return &postResolver{post, r}
+	p := r.Interactor.UpvotePost(accountID, string(args.PostID))
+	return &post{p, r}
 }
 
 func (r *resolver) DownvoteMenfessPost(args struct {
 	PostID graphql.ID
-}) *postResolver {
+}) Post {
 	accountID := r.Context.Value("request").(map[string]string)["id"]
-	post := r.Interactor.DownvotePost(accountID, string(args.PostID))
-	return &postResolver{post, r}
+	p := r.Interactor.DownvotePost(accountID, string(args.PostID))
+	return &post{p, r}
 }
 
 func (r *resolver) MenfessAvatarList() []string {

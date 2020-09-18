@@ -42,10 +42,10 @@ func (r *MenfessRoomConnectionResolver) Edges() []*MenfessRoomResolver {
 }
 
 // PageInfo graphql
-func (r *MenfessRoomConnectionResolver) PageInfo() *PageInfoResolver {
-	var nodeList []node
+func (r *MenfessRoomConnectionResolver) PageInfo() PageInfo {
+	var nodeList []interface{ ID() string }
 	for _, node := range r.menfessRoomList {
 		nodeList = append(nodeList, node)
 	}
-	return &PageInfoResolver{nodeList}
+	return &pageInfo{nodeList}
 }
