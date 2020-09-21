@@ -13,18 +13,10 @@ type Room interface {
 }
 
 type room struct {
-	room entity.Room
-	pr   *resolver
+	entity.Room
+	pr *resolver
 }
 
 func (r *room) ID() graphql.ID {
-	return graphql.ID(r.room.ID())
-}
-
-func (r *room) Name() string {
-	return r.room.Name()
-}
-
-func (r *room) Avatar() string {
-	return r.room.Avatar()
+	return graphql.ID(r.Room.ID())
 }

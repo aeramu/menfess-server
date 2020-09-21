@@ -29,5 +29,5 @@ func (r *roomConnection) PageInfo() PageInfo {
 	for _, node := range r.menfessRoomList {
 		nodeList = append(nodeList, node)
 	}
-	return &pageInfo{nodeList}
+	return pageInfo(nodeList)
 }

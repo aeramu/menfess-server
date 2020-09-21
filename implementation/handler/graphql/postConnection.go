@@ -28,5 +28,5 @@ func (r *postConnection) PageInfo() PageInfo {
 	for _, node := range r.menfessPostList {
 		nodeList = append(nodeList, node)
 	}
-	return pageInfo{nodeList}
+	return pageInfo(nodeList)
 }

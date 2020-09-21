@@ -30,68 +30,53 @@ type Post interface {
 
 // post graphql
 type post struct {
-	post entity.Post
-	pr   *resolver
+	entity.Post
+	pr *resolver
 }
 
 // ID graphql
 func (r post) ID() graphql.ID {
-	return graphql.ID(r.post.ID())
+	return graphql.ID(r.Post.ID())
 }
 
 // Timestamp graphql
 func (r post) Timestamp() int32 {
-	return int32(r.post.Timestamp())
-}
-
-// Name graphql
-func (r post) Name() string {
-	return r.post.Name()
-}
-
-// Avatar graphql
-func (r post) Avatar() string {
-	return r.post.Avatar()
-}
-
-// Body graphql
-func (r post) Body() string {
-	return r.post.Body()
+	return int32(r.Post.Timestamp())
 }
 
 //Room graphql
 func (r post) Room() string {
-	if r.post.Room() == nil {
+	if r.Post.Room() == nil {
 		return "General"
 	}
-	return r.post.Room().Name()
+	return r.Post.Room().Name()
 }
 
 // ReplyCount graphql
 func (r *post) ReplyCount() int32 {
-	return int32(r.post.ReplyCount())
+	return int32(r.Post.ReplyCount())
 }
 
 // UpvoteCount graphql
 func (r *post) UpvoteCount() int32 {
-	return int32(r.post.UpvoteCount())
+	return int32(r.Post.UpvoteCount())
 }
 
 // DownvoteCount graphql
 func (r *post) DownvoteCount() int32 {
-	return int32(r.post.DownvoteCount())
+	return int32(r.Post.DownvoteCount())
 }
 
 //Upvoted bool
 func (r *post) Upvoted() bool {
 	accountID := r.pr.Context.Value("request").(map[string]string)["id"]
-	return r.post.IsUpvoted(accountID)
+	return r.IsUpvoted(accountID)
 }
 
 //Downvoted bool
 func (r *post) Downvoted() bool {
 	accountID := r.pr.Context.Value("request").(map[string]string)["id"]
-	return r.post.IsDownvoted(accountID)
+	return r.IsDownvoted(accountID)
 }
 
 // Parent graphql
@@ -101,10 +86,10 @@ func (r *post) Parent() Post {
 
 //Repost graphql
 func (r *post) Repost() Post {
-	if r.post.Repost() == nil {
+	if r.Post.Repost() == nil {
 		return nil
 	}
-	return &post{r.post.Repost(), r.pr}
+	return &post{r.Post.Repost(), r.pr}
 }
 
 // Child graphql
@@ -119,6 +104,6 @@ func (r *post) Child(args struct {
 		first = int(*args.First)
 	}
 	after := "000000000000000000000000"
-	postList := r.pr.Interactor.PostChild(r.post.ID(), first, after)
+	postList := r.pr.Interactor.PostChild(r.Post.ID(), first, after)
 	return &postConnection{postList, r.pr}
 }

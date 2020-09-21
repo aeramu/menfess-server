@@ -25,15 +25,11 @@ func New(ctx context.Context, i usecase.Interactor) Handler {
 }
 
 type handler struct {
-	relay *relay.Handler
+	*relay.Handler
 }
 
 func (h handler) Response(ctx context.Context, query string, operation string, variables map[string]interface{}) *graphql.Response {
-	return h.relay.Schema.Exec(ctx, query, operation, variables)
-}
-
-func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	h.relay.ServeHTTP(w, r)
+	return h.Schema.Exec(ctx, query, operation, variables)
 }
 
 var schemaString = `

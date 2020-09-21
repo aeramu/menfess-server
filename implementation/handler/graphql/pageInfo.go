@@ -15,24 +15,22 @@ type node interface {
 }
 
 //PageInfoResolver graphql
-type pageInfo struct {
-	nodeList []interface{ ID() string }
-}
+type pageInfo []interface{ ID() string }
 
 //StartCursor get startcursor
 func (r pageInfo) StartCursor() *graphql.ID {
-	if len(r.nodeList) == 0 {
+	if len(r) == 0 {
 		return nil
 	}
-	startCursor := graphql.ID(r.nodeList[0].ID())
+	startCursor := graphql.ID(r[0].ID())
 	return &startCursor
 }
 
 // EndCursor get endcursor
 func (r pageInfo) EndCursor() *graphql.ID {
-	if len(r.nodeList) == 0 {
+	if len(r) == 0 {
 		return nil
 	}
-	endCursor := graphql.ID(r.nodeList[len(r.nodeList)-1].ID())
+	endCursor := graphql.ID(r[len(r)-1].ID())
 	return &endCursor
 }
