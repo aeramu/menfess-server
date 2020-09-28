@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	graphql "github.com/aeramu/menfess-server/implementation/graphql.handler"
+	graphql "github.com/aeramu/menfess-server/implementation/handler/graphql"
 	mongodb "github.com/aeramu/menfess-server/implementation/mongodb/repository"
 	"github.com/aeramu/menfess-server/usecase"
 	"github.com/aws/aws-lambda-go/events"
