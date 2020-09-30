@@ -28,7 +28,6 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 	context := context.WithValue(ctx, "request", request.Headers)
 
 	repository := mongodb.New()
-	defer mongodb.Disconnect()
 	interactor := usecase.InteractorConstructor{
 		Repository: repository,
 	}.New()
@@ -40,7 +39,8 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 	//response
 	return events.APIGatewayProxyResponse{
 		Headers: map[string]string{
-			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Origin":  "*",
+			"Access-Control-Allow-Headers": "Content-Type",
 		},
 		Body:       string(responseJSON),
 		StatusCode: 200,

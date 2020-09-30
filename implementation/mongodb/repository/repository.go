@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var client *mongo.Client = nil
+var client *mongo.Client
 
 //New MenfessPostRepo Constructor
 func New() usecase.Repository {
