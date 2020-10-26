@@ -1,12 +1,13 @@
-package resolver
+package server
 
 import (
-	"context"
-	resolver2 "github.com/aeramu/menfess-server/gateway/resolver"
+"context"
+	"github.com/aeramu/menfess-server/gateway/resolver"
 	"net/http"
 
-	"github.com/graph-gophers/graphql-go"
-	"github.com/graph-gophers/graphql-go/relay"
+post "github.com/aeramu/menfess-server/post/service"
+"github.com/graph-gophers/graphql-go"
+"github.com/graph-gophers/graphql-go/relay"
 )
 
 //Handler interface
@@ -16,11 +17,8 @@ type Handler interface {
 }
 
 //New Handler for graphql
-func NewServer(ctx context.Context, i resolver2.post.Service) Handler {
-	schema := graphql.MustParseSchema(schemaString, &resolver{
-		Context:    ctx,
-		Interactor: i,
-	})
+func NewServer(ctx context.Context, post post.Service) Handler {
+	schema := graphql.MustParseSchema(schemaString, resolver.NewResolver(ctx, post))
 	return &handler{&relay.Handler{Schema: schema}}
 }
 
@@ -62,7 +60,7 @@ var schemaString = `
 		downvoted: Boolean!
 		parent: MenfessPost
 		repost: MenfessPost
-		child(first: Int, after: ID, before: ID, sort: Int): MenfessPostConnection!
+		child(first: Int, after: ID, sort: Int): MenfessPostConnection!
 		room: String!
 	}
 	type MenfessRoom{
@@ -71,7 +69,7 @@ var schemaString = `
 		avatar: String!
 	}
 	type MenfessPostConnection{
-		edges: [MenfessPost]!
+		edges: [MenfessPost!]!
 		pageInfo: PageInfo!
 	}
 	type MenfessRoomConnection{
@@ -83,3 +81,4 @@ var schemaString = `
 		endCursor: ID
 	}
 `
+

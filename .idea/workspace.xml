@@ -25,29 +25,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="84f82642-98a1-48ae-bf68-73d6330be686" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/post/repository/mongodb.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/post/service/repository.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/post/service/service.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/room/Room.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/entity/Post.go" beforeDir="false" afterPath="$PROJECT_DIR$/post/service/model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/entity/Room.go" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway/resolver/api.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway/resolver/resolver.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway/resolver/room.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway/server/graphql.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/implementation/handler/graphql/handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/post.go" beforeDir="false" afterPath="$PROJECT_DIR$/implementation/handler/graphql/post.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/post.go" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/resolver/post.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/postConnection.go" beforeDir="false" afterPath="$PROJECT_DIR$/implementation/handler/graphql/postConnection.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/resolver.go" beforeDir="false" afterPath="$PROJECT_DIR$/implementation/handler/graphql/resolver.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/room.go" beforeDir="false" afterPath="$PROJECT_DIR$/implementation/handler/graphql/room.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/roomConnection.go" beforeDir="false" afterPath="$PROJECT_DIR$/implementation/handler/graphql/roomConnection.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/mongodb/gateway/post.go" beforeDir="false" afterPath="$PROJECT_DIR$/implementation/mongodb/gateway/post.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/mongodb/gateway/room.go" beforeDir="false" afterPath="$PROJECT_DIR$/implementation/mongodb/gateway/room.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/mongodb/repository/post.go" beforeDir="false" afterPath="$PROJECT_DIR$/implementation/mongodb/repository/post.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/mongodb/repository/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/implementation/mongodb/repository/repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/mongodb/repository/room.go" beforeDir="false" afterPath="$PROJECT_DIR$/implementation/mongodb/repository/room.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/infrastructure/http/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure/http/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infrastructure/lambda/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure/lambda/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/usecase/handler.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/usecase/handler.post.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/usecase/handler.room.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/usecase/repository.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/post/repository/mongodb.go" beforeDir="false" afterPath="$PROJECT_DIR$/post/repository/mongodb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post/service/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/post/service/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/post/service/service.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,9 +74,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/implementation" />
+      <recent name="$PROJECT_DIR$/gateway/resolver" />
+      <recent name="$PROJECT_DIR$/gateway" />
       <recent name="$PROJECT_DIR$/room" />
       <recent name="$PROJECT_DIR$/post" />
-      <recent name="$PROJECT_DIR$/service" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -103,6 +95,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>

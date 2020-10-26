@@ -44,5 +44,5 @@ func (p Post) DownvoteCount() int {
 	return len(p.DownvoterIDs)
 }
 func (p Post) UpvoteCount() int {
-	return len(p.DownvoterIDs)
+	return len(p.UpvoterIDs)
 }

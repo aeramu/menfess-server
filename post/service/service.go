@@ -35,7 +35,7 @@ func (i *service) Get(id string) (*Post, error) {
 }
 
 func (i *service) Feed(first int, after string) (*[]Post, error) {
-	//TODO: first after default value in service, not implementation
+	//TODO: first after default value in resolver, not implementation
 	postList, err := i.repo.FindByParentID("", first, after, true)
 	if err != nil {
 		log.Println("Repository Error:", err)
@@ -81,6 +81,15 @@ func (i *service) Create(name string, avatar string, body string, parentID strin
 		log.Println("Repository Error:", err)
 		return nil, err
 	}
+
+	parent, err := i.repo.FindByID(parentID)
+	if err != nil{
+		log.Println("Repository Error:", err)
+		return nil, err
+	}
+	parent.ReplyCount++
+	i.repo.Save(*parent)
+
 	return &post, nil
 }
 

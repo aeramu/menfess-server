@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
+	"github.com/aeramu/menfess-server/gateway/server"
+	"github.com/aeramu/menfess-server/post/repository"
 	"log"
 	"net/http"
 	"os"
 
-	graphql "github.com/aeramu/menfess-server/implementation/handler/graphql"
-	mongodb "github.com/aeramu/menfess-server/implementation/mongodb/repository"
 	"github.com/aeramu/menfess-server/post/service"
 	"github.com/friendsofgo/graphiql"
 )
@@ -18,10 +18,10 @@ func main() {
 		"id": "5ef89baaec8ff2af8b9934c1",
 	})
 
-	repository := mongodb.New()
-	defer mongodb.Disconnect()
-	interactor := service.NewService(repository)
-	handler := graphql.New(ctx, interactor)
+	repo := repository.NewRepository()
+	//defer mongodb.Disconnect()
+	service := service.NewService(repo)
+	handler := server.NewServer(ctx, service)
 	http.Handle("/", handler)
 
 	graphiqlHandler, err := graphiql.NewGraphiqlHandler("/")

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"github.com/aeramu/menfess-server/post/service"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -29,14 +30,11 @@ type repo struct{
 
 func (r *repo) Save(p service.Post) error {
 	post := encode(p)
+	update := bson.D{{"$set", post}}
 	filter := bson.D{{"_id", post.ID}}
-	replyFilter := bson.D{{"_id", post.ParentID}}
-	replyUpdate := bson.D{{"$inc", bson.D{{"replyCount", 1}}}}
-	writeModels := []mongo.WriteModel{
-		mongo.NewUpdateOneModel().SetFilter(filter).SetUpdate(post).SetUpsert(true),
-		mongo.NewUpdateOneModel().SetFilter(replyFilter).SetUpdate(replyUpdate),
-	}
-	if _, err := r.coll.BulkWrite(context.TODO(), writeModels); err != nil{
+	opt := options.Update().SetUpsert(true)
+
+	if _, err := r.coll.UpdateOne(context.TODO(), filter, update, opt); err != nil{
 		return err
 	}
 	return nil
@@ -84,6 +82,7 @@ func (r *repo) FindByParentID(id string, first int, after string, sort bool) (*[
 	if err := cursor.All(context.TODO(), &posts); err != nil{
 		return nil, err
 	}
+	fmt.Println()
 
 	return posts.decode(), nil
 }

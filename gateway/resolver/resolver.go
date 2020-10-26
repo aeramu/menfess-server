@@ -2,54 +2,41 @@ package resolver
 
 import (
 	"context"
-	resolver2 "github.com/aeramu/menfess-server/gateway/resolver"
-
-	"github.com/aeramu/menfess-server/post/service"
+	post "github.com/aeramu/menfess-server/post/service"
 	"github.com/graph-gophers/graphql-go"
 )
 
-//Resolver graphql
 type Resolver interface {
-	MenfessPost(args struct {
-		ID graphql.ID
-	}) resolver2.Post
-	MenfessPostList(args struct {
-		First *int32
-		After *graphql.ID
-		Sort  *bool
-	}) PostConnection
-	MenfessPostRooms(args struct {
-		IDs   []graphql.ID
-		First *int32
-		After *graphql.ID
-	}) PostConnection
-	MenfessRoomList() RoomConnection
-	UpvoteMenfessPost(args struct {
-		PostID graphql.ID
-	}) resolver2.Post
-	DownvoteMenfessPost(args struct {
-		PostID graphql.ID
-	}) resolver2.Post
+	MenfessPost(args MenfessPostRequest) *Post
+	MenfessPostList(args ConnectionRequest) *PostConnection
+	MenfessPostRooms(args MenfessPostRoomsRequest) *PostConnection
+	UpvoteMenfessPost(args UpvoteMenfessPostRequest) *Post
+	DownvoteMenfessPost(args DownvoteMenfessPostRequest) *Post
+	// MenfessRoomList() RoomConnection
 	MenfessAvatarList() []string
 }
 
-type resolver struct {
-	Interactor service.Interactor
-	Context    context.Context
+func NewResolver(ctx context.Context, post post.Service) Resolver {
+	return &resolver{
+		post:    post,
+		Context: ctx,
+	}
 }
 
-func (r *resolver) MenfessPost(args struct {
-	ID graphql.ID
-}) resolver2.Post {
-	p := r.Interactor.Post(string(args.ID))
-	return &resolver2.post{p, r}
+type resolver struct{
+	post    post.Service
+	Context context.Context
 }
 
-func (r *resolver) MenfessPostList(args struct {
-	First *int32
-	After *graphql.ID
-	Sort  *bool
-}) PostConnection {
+func (r *resolver) MenfessPost(args MenfessPostRequest) *Post {
+	p, err := r.post.Get(string(args.ID))
+	if err != nil{
+		return nil
+	}
+	return &Post{*p, r}
+}
+
+func (r *resolver) MenfessPostList(args ConnectionRequest) *PostConnection {
 	first := 20
 	if args.First != nil {
 		first = int(*args.First)
@@ -58,15 +45,18 @@ func (r *resolver) MenfessPostList(args struct {
 	if args.After != nil {
 		after = string(*args.After)
 	}
-	postList := r.Interactor.PostFeed(first, after)
-	return &postConnection{postList, r}
+	postList, err := r.post.Feed(first, after)
+	if err != nil{
+		return nil
+	}
+	var posts []Post
+	for _, elem := range *postList {
+		posts = append(posts, Post{elem, r})
+	}
+	return &PostConnection{posts, r}
 }
 
-func (r *resolver) MenfessPostRooms(args struct {
-	IDs   []graphql.ID
-	First *int32
-	After *graphql.ID
-}) PostConnection {
+func (r *resolver) MenfessPostRooms(args MenfessPostRoomsRequest) *PostConnection {
 	first := 20
 	if args.First != nil {
 		first = int(*args.First)
@@ -79,13 +69,20 @@ func (r *resolver) MenfessPostRooms(args struct {
 	for _, id := range args.IDs {
 		roomIDs = append(roomIDs, string(id))
 	}
-	postList := r.Interactor.PostRooms(roomIDs, first, after)
-	return &postConnection{postList, r}
+	postList, err := r.post.Rooms(roomIDs[0], first, after)
+	if err != nil{
+		return nil
+	}
+	var posts []Post
+	for _, elem := range *postList {
+		posts = append(posts, Post{elem, r})
+	}
+	return &PostConnection{posts, r}
 }
 
-func (r *resolver) MenfessRoomList() RoomConnection {
-	roomList := r.Interactor.RoomList()
-	return &roomConnection{roomList, r}
+func (r *resolver) MenfessRoomList() *RoomConnection {
+	roomList := []*Room{{},{}}
+	return &RoomConnection{roomList, r}
 }
 
 func (r *resolver) PostMenfessPost(args struct {
@@ -95,7 +92,7 @@ func (r *resolver) PostMenfessPost(args struct {
 	ParentID *graphql.ID
 	RepostID *graphql.ID
 	RoomID   *graphql.ID
-}) resolver2.Post {
+}) *Post {
 	parentID := ""
 	if args.ParentID != nil {
 		parentID = string(*args.ParentID)
@@ -108,24 +105,29 @@ func (r *resolver) PostMenfessPost(args struct {
 	if args.RoomID != nil {
 		roomID = string(*args.RoomID)
 	}
-	p := r.Interactor.PostPost(args.Name, args.Avatar, args.Body, parentID, repostID, roomID)
-	return &resolver2.post{p, r}
+	p, err := r.post.Create(args.Name, args.Avatar, args.Body, parentID, repostID, roomID)
+	if err != nil{
+		return nil
+	}
+	return &Post{*p, r}
 }
 
-func (r *resolver) UpvoteMenfessPost(args struct {
-	PostID graphql.ID
-}) resolver2.Post {
+func (r *resolver) UpvoteMenfessPost(args UpvoteMenfessPostRequest) *Post {
 	accountID := r.Context.Value("request").(map[string]string)["id"]
-	p := r.Interactor.UpvotePost(accountID, string(args.PostID))
-	return &resolver2.post{p, r}
+	p, err := r.post.Upvote(accountID, string(args.PostID))
+	if err != nil{
+		return nil
+	}
+	return &Post{*p, r}
 }
 
-func (r *resolver) DownvoteMenfessPost(args struct {
-	PostID graphql.ID
-}) resolver2.Post {
+func (r *resolver) DownvoteMenfessPost(args DownvoteMenfessPostRequest) *Post {
 	accountID := r.Context.Value("request").(map[string]string)["id"]
-	p := r.Interactor.DownvotePost(accountID, string(args.PostID))
-	return &resolver2.post{p, r}
+	p, err := r.post.Downvote(accountID, string(args.PostID))
+	if err != nil {
+		return nil
+	}
+	return &Post{*p, r}
 }
 
 func (r *resolver) MenfessAvatarList() []string {
