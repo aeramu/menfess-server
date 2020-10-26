@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/aeramu/menfess-server/usecase"
+	"github.com/aeramu/menfess-server/post/service"
 	"github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
 )
@@ -16,7 +16,7 @@ type Handler interface {
 }
 
 //New Handler for graphql
-func New(ctx context.Context, i usecase.Interactor) Handler {
+func New(ctx context.Context, i service.Interactor) Handler {
 	schema := graphql.MustParseSchema(schemaString, &resolver{
 		Context:    ctx,
 		Interactor: i,

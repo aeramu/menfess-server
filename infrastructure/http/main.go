@@ -8,7 +8,7 @@ import (
 
 	graphql "github.com/aeramu/menfess-server/implementation/handler/graphql"
 	mongodb "github.com/aeramu/menfess-server/implementation/mongodb/repository"
-	"github.com/aeramu/menfess-server/usecase"
+	"github.com/aeramu/menfess-server/post/service"
 	"github.com/friendsofgo/graphiql"
 )
 
@@ -20,9 +20,7 @@ func main() {
 
 	repository := mongodb.New()
 	defer mongodb.Disconnect()
-	interactor := usecase.InteractorConstructor{
-		Repository: repository,
-	}.New()
+	interactor := service.NewService(repository)
 	handler := graphql.New(ctx, interactor)
 	http.Handle("/", handler)
 

@@ -1,6 +1,8 @@
 package resolver
 
-import "github.com/aeramu/menfess-server/entity"
+import (
+	room2 "github.com/aeramu/menfess-server/room"
+)
 
 //RoomConnection graphql
 type RoomConnection interface {
@@ -10,7 +12,7 @@ type RoomConnection interface {
 
 // MenfessRoomConnectionResolver graphql
 type roomConnection struct {
-	menfessRoomList []entity.Room
+	menfessRoomList []room2.Room
 	pr              *resolver
 }
 

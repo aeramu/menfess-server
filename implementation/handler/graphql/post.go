@@ -1,7 +1,7 @@
 package resolver
 
 import (
-	"github.com/aeramu/menfess-server/entity"
+	"github.com/aeramu/menfess-server/post/service"
 	"github.com/graph-gophers/graphql-go"
 )
 
@@ -30,7 +30,7 @@ type Post interface {
 
 // post graphql
 type post struct {
-	entity.Post
+	service.Post
 	pr *resolver
 }
 

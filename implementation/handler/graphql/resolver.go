@@ -3,7 +3,7 @@ package resolver
 import (
 	"context"
 
-	"github.com/aeramu/menfess-server/usecase"
+	"github.com/aeramu/menfess-server/post/service"
 	"github.com/graph-gophers/graphql-go"
 )
 
@@ -33,7 +33,7 @@ type Resolver interface {
 }
 
 type resolver struct {
-	Interactor usecase.Interactor
+	Interactor service.Interactor
 	Context    context.Context
 }
 

@@ -1,7 +1,7 @@
 package resolver
 
 import (
-	"github.com/aeramu/menfess-server/entity"
+	room2 "github.com/aeramu/menfess-server/room"
 	"github.com/graph-gophers/graphql-go"
 )
 
@@ -13,7 +13,7 @@ type Room interface {
 }
 
 type room struct {
-	entity.Room
+	room2.Room
 	pr *resolver
 }
 

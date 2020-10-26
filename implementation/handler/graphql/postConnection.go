@@ -1,6 +1,8 @@
 package resolver
 
-import "github.com/aeramu/menfess-server/entity"
+import (
+	"github.com/aeramu/menfess-server/post/service"
+)
 
 //PostConnection graphql
 type PostConnection interface {
@@ -9,7 +11,7 @@ type PostConnection interface {
 }
 
 type postConnection struct {
-	menfessPostList []entity.Post
+	menfessPostList []service.Post
 	pr              *resolver
 }
 

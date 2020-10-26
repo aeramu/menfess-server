@@ -5,8 +5,8 @@ package repository
 
 import (
 	"context"
+	"github.com/aeramu/menfess-server/post/service"
 
-	"github.com/aeramu/menfess-server/entity"
 	"github.com/aeramu/menfess-server/implementation/mongodb/gateway"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -35,7 +35,7 @@ var lookupRepostRoom = d("$lookup", bson.D{
 	e("as", "repostRoom"),
 })
 
-func (repo *repo) GetPostByID(hexID string) entity.Post {
+func (repo *repo) GetPostByID(hexID string) service.Post {
 	id, _ := primitive.ObjectIDFromHex(hexID)
 
 	filter := d("_id", id)
@@ -52,7 +52,7 @@ func (repo *repo) GetPostByID(hexID string) entity.Post {
 	return posts[0].Entity()
 }
 
-func (repo *repo) GetPostListByParentID(parentID string, first int, after string, ascSort bool) []entity.Post {
+func (repo *repo) GetPostListByParentID(parentID string, first int, after string, ascSort bool) []service.Post {
 	parentid, _ := primitive.ObjectIDFromHex(parentID)
 	afterid, _ := primitive.ObjectIDFromHex(after)
 	comparator := "$lt"
@@ -77,7 +77,7 @@ func (repo *repo) GetPostListByParentID(parentID string, first int, after string
 	return posts.Entity()
 }
 
-func (repo *repo) GetPostListByRoomIDs(roomIDs []string, first int, after string, ascSort bool) []entity.Post {
+func (repo *repo) GetPostListByRoomIDs(roomIDs []string, first int, after string, ascSort bool) []service.Post {
 	roomids := gateway.IDsFromHex(roomIDs)
 	afterid, _ := primitive.ObjectIDFromHex(after)
 	comparator := "$lt"
@@ -102,7 +102,7 @@ func (repo *repo) GetPostListByRoomIDs(roomIDs []string, first int, after string
 	return posts.Entity()
 }
 
-func (repo *repo) PutPost(name string, avatar string, body string, parentID string, repostID string, roomID string) entity.Post {
+func (repo *repo) PutPost(name string, avatar string, body string, parentID string, repostID string, roomID string) service.Post {
 	post := gateway.NewPostModel(name, avatar, body, parentID, repostID, roomID)
 	filter := d("_id", post.ParentID)
 	update := d("$inc", d("replyCount", 1))

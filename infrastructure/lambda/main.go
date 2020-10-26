@@ -6,7 +6,7 @@ import (
 
 	graphql "github.com/aeramu/menfess-server/implementation/handler/graphql"
 	mongodb "github.com/aeramu/menfess-server/implementation/mongodb/repository"
-	"github.com/aeramu/menfess-server/usecase"
+	"github.com/aeramu/menfess-server/post/service"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
@@ -28,9 +28,7 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 	context := context.WithValue(ctx, "request", request.Headers)
 
 	repository := mongodb.New()
-	interactor := usecase.InteractorConstructor{
-		Repository: repository,
-	}.New()
+	interactor := service.NewService(repository)
 	handler := graphql.New(context, interactor)
 
 	response := handler.Response(context, parameter.Query, parameter.OperationName, parameter.Variables)

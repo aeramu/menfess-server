@@ -1,7 +1,8 @@
 package gateway
 
 import (
-	"github.com/aeramu/menfess-server/entity"
+	"github.com/aeramu/menfess-server/post/service"
+	"github.com/aeramu/menfess-server/room"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -16,8 +17,8 @@ type Room struct {
 type Rooms []*Room
 
 //Entity convert room to entity
-func (m *Room) Entity() entity.Room {
-	return entity.RoomConstructor{
+func (m *Room) Entity() room.Room {
+	return service.RoomConstructor{
 		ID:     m.ID.Hex(),
 		Name:   m.Name,
 		Avatar: m.Avatar,
@@ -25,8 +26,8 @@ func (m *Room) Entity() entity.Room {
 }
 
 //Entity convert array of room to entity
-func (rooms Rooms) Entity() []entity.Room {
-	var entityList []entity.Room
+func (rooms Rooms) Entity() []room.Room {
+	var entityList []room.Room
 	for _, room := range rooms {
 		entityList = append(entityList, room.Entity())
 	}

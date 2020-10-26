@@ -1,7 +1,8 @@
 package gateway
 
 import (
-	"github.com/aeramu/menfess-server/entity"
+	"github.com/aeramu/menfess-server/post/service"
+	room2 "github.com/aeramu/menfess-server/room"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -56,18 +57,18 @@ type Post struct {
 type Posts []*Post
 
 //Entity convert post to entity
-func (m *Post) Entity() entity.Post {
-	var repost entity.Post = nil
+func (m *Post) Entity() service.Post {
+	var repost service.Post = nil
 	if len(m.Repost) > 0 {
 		m.Repost[0].Room = m.RepostRoom
 		repost = m.Repost[0].Entity()
 	}
-	var room entity.Room = nil
+	var room room2.Room = nil
 	if len(m.Room) > 0 {
 		room = m.Room[0].Entity()
 	}
 
-	return entity.PostConstructor{
+	return service.PostConstructor{
 		ID:           m.ID.Hex(),
 		Timestamp:    int(m.ID.Timestamp().Unix()),
 		Name:         m.Name,
@@ -82,8 +83,8 @@ func (m *Post) Entity() entity.Post {
 }
 
 //Entity convert array of post to entity
-func (posts Posts) Entity() []entity.Post {
-	var entityList []entity.Post
+func (posts Posts) Entity() []service.Post {
+	var entityList []service.Post
 	for _, post := range posts {
 		entityList = append(entityList, post.Entity())
 	}

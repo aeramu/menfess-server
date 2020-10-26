@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/aeramu/menfess-server/usecase"
+	"github.com/aeramu/menfess-server/post/service"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -12,7 +12,7 @@ import (
 var client *mongo.Client
 
 //New MenfessPostRepo Constructor
-func New() usecase.Repository {
+func New() service.Repository {
 	if client == nil {
 		client, _ = mongo.Connect(context.Background(), options.Client().ApplyURI(
 			"mongodb+srv://admin:admin@qiup-wrbox.mongodb.net/",

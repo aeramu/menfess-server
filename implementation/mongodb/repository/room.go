@@ -2,14 +2,14 @@ package repository
 
 import (
 	"context"
+	"github.com/aeramu/menfess-server/room"
 
-	"github.com/aeramu/menfess-server/entity"
 	"github.com/aeramu/menfess-server/implementation/mongodb/gateway"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (repo *repo) GetRoomList() []entity.Room {
+func (repo *repo) GetRoomList() []room.Room {
 	filter := bson.D{{}}
 	cursor, _ := repo.room.Find(context.TODO(), filter)
 
@@ -18,7 +18,7 @@ func (repo *repo) GetRoomList() []entity.Room {
 	return rooms.Entity()
 }
 
-func (repo *repo) GetRoom(id string) entity.Room {
+func (repo *repo) GetRoom(id string) room.Room {
 	objectID, _ := primitive.ObjectIDFromHex(id)
 
 	filter := d("_id", objectID)
