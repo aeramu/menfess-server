@@ -3,6 +3,7 @@ package resolver
 import (
 	"context"
 	post "github.com/aeramu/menfess-server/post/service"
+	room "github.com/aeramu/menfess-server/room/service"
 	"github.com/graph-gophers/graphql-go"
 )
 
@@ -16,15 +17,17 @@ type Resolver interface {
 	MenfessAvatarList() []string
 }
 
-func NewResolver(ctx context.Context, post post.Service) Resolver {
+func NewResolver(ctx context.Context, post post.Service, room room.Service) Resolver {
 	return &resolver{
 		post:    post,
+		room: room,
 		Context: ctx,
 	}
 }
 
 type resolver struct{
 	post    post.Service
+	room room.Service
 	Context context.Context
 }
 
@@ -41,7 +44,7 @@ func (r *resolver) MenfessPostList(args ConnectionRequest) *PostConnection {
 	if args.First != nil {
 		first = int(*args.First)
 	}
-	after := "ffffffffffffffffffffffff"
+	after := ""
 	if args.After != nil {
 		after = string(*args.After)
 	}
@@ -61,7 +64,7 @@ func (r *resolver) MenfessPostRooms(args MenfessPostRoomsRequest) *PostConnectio
 	if args.First != nil {
 		first = int(*args.First)
 	}
-	after := "ffffffffffffffffffffffff"
+	after := ""
 	if args.After != nil {
 		after = string(*args.After)
 	}
@@ -81,8 +84,15 @@ func (r *resolver) MenfessPostRooms(args MenfessPostRoomsRequest) *PostConnectio
 }
 
 func (r *resolver) MenfessRoomList() *RoomConnection {
-	roomList := []*Room{{},{}}
-	return &RoomConnection{roomList, r}
+	roomList, err := r.room.GetList(room.GetListReq{})
+	if err != nil{
+		return nil
+	}
+	var rooms []Room
+	for _, elem := range *roomList {
+		rooms = append(rooms, Room{elem, r})
+	}
+	return &RoomConnection{rooms, r}
 }
 
 func (r *resolver) PostMenfessPost(args struct {

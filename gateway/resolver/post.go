@@ -1,12 +1,13 @@
 package resolver
 
 import (
-	"github.com/aeramu/menfess-server/post/service"
+	post "github.com/aeramu/menfess-server/post/service"
+	room "github.com/aeramu/menfess-server/room/service"
 	"github.com/graph-gophers/graphql-go"
 )
 
 type Post struct {
-	service.Post
+	post.Post
 	root *resolver
 }
 func (r Post) ID() graphql.ID {
@@ -29,7 +30,11 @@ func (r Post) Room() string {
 		return "General"
 	}
 	//return r.Post.RoomID.Name
-	return ""
+	room, err := r.root.room.Get(room.GetReq{ID: r.Post.RoomID})
+	if err != nil{
+		return ""
+	}
+	return room.Name
 }
 func (r Post) ReplyCount() int32 {
 	return int32(r.Post.ReplyCount)
@@ -49,7 +54,7 @@ func (r Post) Downvoted() bool {
 	return r.IsDownvoted(accountID)
 }
 func (r Post) Parent() *Post {
-	if r.Post.RepostID == "000000000000000000000000" {
+	if r.Post.ParentID == "" {
 		return nil
 	}
 	p, err := r.root.post.Get(r.ParentID)
@@ -59,7 +64,7 @@ func (r Post) Parent() *Post {
 	return &Post{*p, r.root}
 }
 func (r Post) Repost() *Post {
-	if r.Post.RepostID == "000000000000000000000000" {
+	if r.Post.RepostID == ""{
 		return nil
 	}
 	p, err := r.root.post.Get(r.RepostID)
@@ -73,7 +78,7 @@ func (r Post) Child(args ConnectionRequest) PostConnection {
 	if args.First != nil {
 		first = int(*args.First)
 	}
-	after := "000000000000000000000000"
+	after := ""
 	if args.After != nil{
 		after = string(*args.After)
 	}

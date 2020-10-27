@@ -1,13 +1,14 @@
 package server
 
 import (
-"context"
+	"context"
 	"github.com/aeramu/menfess-server/gateway/resolver"
+	room "github.com/aeramu/menfess-server/room/service"
 	"net/http"
 
-post "github.com/aeramu/menfess-server/post/service"
-"github.com/graph-gophers/graphql-go"
-"github.com/graph-gophers/graphql-go/relay"
+	post "github.com/aeramu/menfess-server/post/service"
+	"github.com/graph-gophers/graphql-go"
+	"github.com/graph-gophers/graphql-go/relay"
 )
 
 //Handler interface
@@ -17,8 +18,8 @@ type Handler interface {
 }
 
 //New Handler for graphql
-func NewServer(ctx context.Context, post post.Service) Handler {
-	schema := graphql.MustParseSchema(schemaString, resolver.NewResolver(ctx, post))
+func NewServer(ctx context.Context, post post.Service, room room.Service) Handler {
+	schema := graphql.MustParseSchema(schemaString, resolver.NewResolver(ctx, post, room))
 	return &handler{&relay.Handler{Schema: schema}}
 }
 
@@ -66,14 +67,16 @@ var schemaString = `
 	type MenfessRoom{
 		id: ID!
 		name: String!
+		desc: String!
 		avatar: String!
+		status: Boolean!
 	}
 	type MenfessPostConnection{
 		edges: [MenfessPost!]!
 		pageInfo: PageInfo!
 	}
 	type MenfessRoomConnection{
-		edges: [MenfessRoom]!
+		edges: [MenfessRoom!]!
 		pageInfo: PageInfo!
 	}
 	type PageInfo{

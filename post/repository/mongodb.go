@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 	"github.com/aeramu/menfess-server/post/service"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -14,10 +13,15 @@ import (
 var client *mongo.Client
 
 func NewRepository() service.Repository {
+	var err error
 	if client == nil {
-		client, _ = mongo.Connect(context.Background(), options.Client().ApplyURI(
+		client, err = mongo.Connect(context.Background(), options.Client().ApplyURI(
 			"mongodb+srv://admin:admin@qiup-wrbox.mongodb.net/",
 		))
+	}
+	if err != nil{
+		log.Println("DB Connect Error:", err)
+		return nil
 	}
 	return &repo{
 		coll:   client.Database("menfess").Collection("post"),
@@ -82,7 +86,6 @@ func (r *repo) FindByParentID(id string, first int, after string, sort bool) (*[
 	if err := cursor.All(context.TODO(), &posts); err != nil{
 		return nil, err
 	}
-	fmt.Println()
 
 	return posts.decode(), nil
 }
@@ -129,15 +132,27 @@ type Post struct {
 }
 
 func (p Post) decode() *service.Post{
+	parentID := p.ParentID.Hex()
+	if p.ParentID.IsZero() {
+		parentID = ""
+	}
+	repostID := p.RepostID.Hex()
+	if p.RepostID.IsZero() {
+		repostID = ""
+	}
+	roomID := p.RoomID.Hex()
+	if p.RoomID.IsZero() {
+		roomID = ""
+	}
 	return &service.Post{
 		ID:           p.ID.Hex(),
 		Timestamp:    int(p.ID.Timestamp().Unix()),
 		Name:         p.Name,
 		Avatar:       p.Avatar,
 		Body:         p.Body,
-		ParentID:     p.ParentID.Hex(),
-		RepostID:     p.RepostID.Hex(),
-		RoomID:       p.RoomID.Hex(),
+		ParentID:     parentID,
+		RepostID:     repostID,
+		RoomID:       roomID,
 		UpvoterIDs:   p.UpvoterIDs,
 		DownvoterIDs: p.DownvoterIDs,
 		ReplyCount:   p.ReplyCount,
@@ -170,9 +185,6 @@ func encode(p service.Post) *Post{
 }
 
 func objectID(hex string) primitive.ObjectID{
-	id, err := primitive.ObjectIDFromHex(hex)
-	if err != nil {
-		log.Println("Parse Mongo ID Error", err)
-	}
+	id, _ := primitive.ObjectIDFromHex(hex)
 	return id
 }

@@ -35,7 +35,9 @@ func (i *service) Get(id string) (*Post, error) {
 }
 
 func (i *service) Feed(first int, after string) (*[]Post, error) {
-	//TODO: first after default value in resolver, not implementation
+	if after == ""{
+		after = "ffffffffffffffffffffffff"
+	}
 	postList, err := i.repo.FindByParentID("", first, after, true)
 	if err != nil {
 		log.Println("Repository Error:", err)
@@ -54,6 +56,9 @@ func (i *service) Child(parentID string, first int, after string) (*[]Post, erro
 }
 
 func (i *service) Rooms(roomID string, first int, after string) (*[]Post, error) {
+	if after == ""{
+		after = "ffffffffffffffffffffffff"
+	}
 	postList, err := i.repo.FindByRoomID(roomID, first, after, true)
 	if err != nil {
 		log.Println("Repository Error:", err)
@@ -87,8 +92,10 @@ func (i *service) Create(name string, avatar string, body string, parentID strin
 		log.Println("Repository Error:", err)
 		return nil, err
 	}
-	parent.ReplyCount++
-	i.repo.Save(*parent)
+	if parent != nil{
+		parent.ReplyCount++
+		i.repo.Save(*parent)
+	}
 
 	return &post, nil
 }
