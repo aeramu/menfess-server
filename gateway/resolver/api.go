@@ -3,23 +3,41 @@ package resolver
 import "github.com/graph-gophers/graphql-go"
 
 type(
-	MenfessPostRequest struct{
+	PostReq struct{
 		ID graphql.ID
 	}
-	ConnectionRequest struct {
-		First *int32
-		After *graphql.ID
-		Sort  *bool
-	}
-	MenfessPostRoomsRequest struct {
-		IDs   []graphql.ID
+	ConnectionReq struct{
 		First *int32
 		After *graphql.ID
 	}
-	UpvoteMenfessPostRequest struct {
-		PostID graphql.ID
+	CreatePostReq struct {
+		Body string
+		AuthorID graphql.ID
+		ParentID *graphql.ID
 	}
-	DownvoteMenfessPostRequest struct {
-		PostID graphql.ID
+	DeletePostReq struct{
+		ID graphql.ID
+	}
+	LikePostReq struct{
+		ID graphql.ID
+	}
+	RegisterReq struct{
+		Email string
+		Password string
+		PushToken string
+	}
+	LoginReq struct{
+		Email string
+		Password string
+		PushToken string
+	}
+	LogoutReq struct {
+		ID graphql.ID
+		PushToken string
+	}
+	UpdateProfileReq struct{
+		Name string
+		Avatar string
+		Bio string
 	}
 )

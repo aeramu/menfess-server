@@ -21,23 +21,60 @@
         <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </expand>
-    <select />
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:v2" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="84f82642-98a1-48ae-bf68-73d6330be686" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/room/repository/mongodb.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/room/service/api.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/room/service/model.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/room/service/repository.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/room/service/service.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/auth/client/userClient.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/auth/service/api.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/auth/service/interface.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/auth/service/model.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/auth/service/service.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway/resolver/user.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post/client/notificationClient.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post/service/api.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/repository/mongodb.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/service/api.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/service/interface.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/service/model.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/user/service/service.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/resolver/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/resolver/api.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gateway/resolver/post.go" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/resolver/post.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gateway/resolver/resolver.go" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/resolver/resolver.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/resolver/room.go" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/resolver/room.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/resolver/room.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/gateway/server/graphql.go" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/server/graphql.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infrastructure/http/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/infrastructure/http/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/handler.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/pageInfo.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/postConnection.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/resolver.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/room.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/roomConnection.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/implementation/mongodb/gateway/gateway.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/implementation/mongodb/gateway/post.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/implementation/mongodb/gateway/room.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/implementation/mongodb/repository/post.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/implementation/mongodb/repository/repository.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/implementation/mongodb/repository/room.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/infrastructure/http/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/http/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/infrastructure/lambda/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/lambda/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/post/repository/mongodb.go" beforeDir="false" afterPath="$PROJECT_DIR$/post/repository/mongodb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/room/Room.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/post/service/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/post/service/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post/service/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/post/service/interface.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/post/service/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/room/repository/mongodb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/room/service/api.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/room/service/model.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/room/service/repository.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/room/service/service.go" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,12 +90,20 @@
   </component>
   <component name="GOROOT" path="/usr/lib/go" />
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="v1" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GoLibraries">
     <option name="indexEntireGoPath" value="false" />
   </component>
   <component name="ProjectId" id="1jOl3ohabiLgFirVYkU4vyhNacT" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -70,18 +115,18 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/room/repository" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../library-server" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/room/repository" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/implementation" />
       <recent name="$PROJECT_DIR$/gateway/resolver" />
       <recent name="$PROJECT_DIR$/gateway" />
       <recent name="$PROJECT_DIR$/room" />
       <recent name="$PROJECT_DIR$/post" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/room/repository" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -93,7 +138,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="v2" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -104,6 +161,14 @@
     <integration-enabled>true</integration-enabled>
   </component>
   <component name="WindowStateProjectService">
+    <state x="466" y="156" width="424" height="486" key="FileChooserDialogImpl" timestamp="1604904008322">
+      <screen x="0" y="28" width="1366" height="740" />
+    </state>
+    <state x="466" y="156" width="424" height="486" key="FileChooserDialogImpl/0.28.1366.740@0.28.1366.740" timestamp="1604904008322" />
+    <state x="266" y="144" width="824" height="510" key="IDE.errors.dialog" timestamp="1604113691914">
+      <screen x="0" y="28" width="1366" height="740" />
+    </state>
+    <state x="266" y="144" width="824" height="510" key="IDE.errors.dialog/0.28.1366.740@0.28.1366.740" timestamp="1604113691914" />
     <state x="0" y="28" width="616" height="740" key="find.popup" timestamp="1603766874628">
       <screen x="0" y="28" width="1366" height="740" />
     </state>
@@ -112,5 +177,9 @@
       <screen x="0" y="28" width="1366" height="740" />
     </state>
     <state x="515" y="149" width="325" height="499" key="refactoring.ChangeSignatureDialog/0.28.1366.740@0.28.1366.740" timestamp="1603683168106" />
+    <state x="346" y="89" width="672" height="678" key="search.everywhere.popup" timestamp="1604239302528">
+      <screen x="0" y="28" width="1366" height="740" />
+    </state>
+    <state x="346" y="89" width="672" height="678" key="search.everywhere.popup/0.28.1366.740@0.28.1366.740" timestamp="1604239302528" />
   </component>
 </project>

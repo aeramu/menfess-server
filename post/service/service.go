@@ -6,130 +6,119 @@ import (
 )
 
 type Service interface {
-	Get(id string) (*Post, error)
-	Feed(first int, after string) (*[]Post, error)
-	Child(parentID string, first int, after string) (*[]Post, error)
-	Rooms(roomID string, first int, after string) (*[]Post, error)
-	Create(name string, avatar string, body string, parentID string, repostID string, roomID string) (*Post, error)
-	Upvote(accountID string, postID string) (*Post, error)
-	Downvote(accountID string, postID string) (*Post, error)
+	Create(req CreateReq) (*Post, error)
+	Get(req GetReq) (*Post, error)
+	Feed(req FeedReq) (*[]Post, error)
+	Replies(req RepliesReq) (*[]Post, error)
+	Like(req LikeReq) (*Post, error)
+	Report(req ReportReq) (*Post, error)
+	Delete(req DeleteReq) error
 }
 
-func NewService(repo Repository) Service {
+func NewService(repo Repository, notif NotificationClient) Service {
 	return &service{
 		repo: repo,
+		notif: notif,
 	}
 }
 
 type service struct {
 	repo Repository
+	notif NotificationClient
 }
 
-func (i *service) Get(id string) (*Post, error) {
-	post, err := i.repo.FindByID(id)
-	if err != nil {
-		log.Println("Repository Error:", err)
-		return nil, err
-	}
-	return post, nil
-}
-
-func (i *service) Feed(first int, after string) (*[]Post, error) {
-	if after == ""{
-		after = "ffffffffffffffffffffffff"
-	}
-	postList, err := i.repo.FindByParentID("", first, after, true)
-	if err != nil {
-		log.Println("Repository Error:", err)
-		return nil, err
-	}
-	return postList, nil
-}
-
-func (i *service) Child(parentID string, first int, after string) (*[]Post, error) {
-	postList, err := i.repo.FindByParentID(parentID, first, after, false)
-	if err != nil {
-		log.Println("Repository Error:", err)
-		return nil, err
-	}
-	return postList, nil
-}
-
-func (i *service) Rooms(roomID string, first int, after string) (*[]Post, error) {
-	if after == ""{
-		after = "ffffffffffffffffffffffff"
-	}
-	postList, err := i.repo.FindByRoomID(roomID, first, after, true)
-	if err != nil {
-		log.Println("Repository Error:", err)
-		return nil, err
-	}
-	return postList, nil
-}
-
-func (i *service) Create(name string, avatar string, body string, parentID string, repostID string, roomID string) (*Post, error) {
+func (s *service) Create(req CreateReq) (*Post, error) {
 	id := primitive.NewObjectID()
 	post := Post{
-		ID:           id.Hex(),
-		Timestamp:    int(id.Timestamp().Unix()),
-		Name:         name,
-		Avatar:       avatar,
-		Body:         body,
-		ParentID:     parentID,
-		RepostID:     repostID,
-		RoomID:       roomID,
-		UpvoterIDs: map[string]bool{},
-		DownvoterIDs: map[string]bool{},
-		ReplyCount:   0,
+		ID: id.Hex(),
+		Timestamp: int(id.Timestamp().Unix()),
+		Body: req.Body,
+		AuthorID: req.AuthorID,
+		UserID: req.UserID,
+		ParentID: req.ParentID,
+		LikeIDs: map[string]bool{},
+		RepliesCount:   0,
+		ReportsCount: 0,
 	}
-	if err := i.repo.Save(post); err != nil{
+	if err := s.repo.Save(post); err != nil{
 		log.Println("Repository Error:", err)
 		return nil, err
 	}
 
-	parent, err := i.repo.FindByID(parentID)
-	if err != nil{
-		log.Println("Repository Error:", err)
-		return nil, err
-	}
-	if parent != nil{
-		parent.ReplyCount++
-		i.repo.Save(*parent)
+	if post.ParentID == "" {
+		return &post, nil
 	}
 
-	return &post, nil
-}
-
-func (i *service) Upvote(accountID string, postID string) (*Post, error) {
-	post, err := i.repo.FindByID(postID)
+	parent, err := s.repo.FindByID(post.ParentID)
 	if err != nil {
 		log.Println("Repository Error:", err)
-		return nil, err
 	}
-	if post.IsDownvoted(accountID) {
-		post.Downvote(accountID)
+	if parent != nil {
+		parent.RepliesCount++
+		if err := s.repo.Save(*parent); err != nil{
+			log.Println("Repository Error:", err)
+		}
+		if err := s.notif.Send("reply", parent.UserID, post); err != nil{
+			log.Println("Notification Client Error:", err)
+		}
 	}
-	post.Upvote(accountID)
-	if err := i.repo.Save(*post); err != nil{
+	return &post, err
+}
+
+func (s *service) Get(req GetReq) (*Post, error) {
+	post, err := s.repo.FindByID(req.ID)
+	if err != nil {
 		log.Println("Repository Error:", err)
 		return nil, err
 	}
 	return post, nil
 }
 
-func (i *service) Downvote(accountID string, postID string) (*Post, error) {
-	post, err := i.repo.FindByID(postID)
+func (s *service) Feed(req FeedReq) (*[]Post, error) {
+	if req.After == ""{
+		req.After = "ffffffffffffffffffffffff"
+	}
+	postList, err := s.repo.FindByParentID("", req.First, req.After, true)
 	if err != nil {
 		log.Println("Repository Error:", err)
 		return nil, err
 	}
-	if post.IsUpvoted(accountID) {
-		post.Upvote(accountID)
-	}
-	post.Downvote(accountID)
-	if err := i.repo.Save(*post); err != nil{
+	return postList, nil
+}
+
+func (s *service) Replies(req RepliesReq) (*[]Post, error) {
+	postList, err := s.repo.FindByParentID(req.PostID, req.First, req.After, false)
+	if err != nil {
 		log.Println("Repository Error:", err)
 		return nil, err
 	}
+	return postList, nil
+}
+
+func (s *service) Like(req LikeReq) (*Post, error) {
+	post, err := s.repo.FindByID(req.PostID)
+	if err != nil {
+		log.Println("Repository Error:", err)
+		return nil, err
+	}
+	if post == nil{
+		return nil, nil
+	}
+	post.Like(req.UserID)
+	if err := s.repo.Save(*post); err != nil{
+		log.Println("Repository Error:", err)
+		return nil, err
+	}
+	if err := s.notif.Send("like", post.UserID, req); err != nil{
+		log.Println("Notification Client Error:", err)
+	}
 	return post, nil
+}
+
+func (s *service) Report(req ReportReq) (*Post, error) {
+	panic("implement me")
+}
+
+func (s *service) Delete(req DeleteReq) error {
+	panic("implement me")
 }

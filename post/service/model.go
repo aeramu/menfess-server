@@ -1,48 +1,30 @@
 package service
 
 type Post struct {
-	ID				string
-	Timestamp    int
-	Name         string
-	Avatar       string
-	Body         string
-	ParentID 	string
-	RepostID       string
-	RoomID         string
-	UpvoterIDs		map[string]bool
-	DownvoterIDs	map[string]bool
-	ReplyCount   int
+	ID	string
+	Timestamp int
+	Body string
+	AuthorID string
+	UserID string
+	ParentID string
+	LikeIDs map[string]bool
+	RepliesCount int
+	ReportsCount int
 }
 
-func (p *Post) Upvote(accountID string) bool {
-	voted := p.IsUpvoted(accountID)
+func (p *Post) Like(accountID string) bool {
+	voted := p.IsLiked(accountID)
 	if !voted {
-		p.UpvoterIDs[accountID] = true
+		p.LikeIDs[accountID] = true
 	} else {
-		delete(p.UpvoterIDs, accountID)
+		delete(p.LikeIDs, accountID)
 	}
 	return voted
 }
-func (p *Post) Downvote(accountID string) bool {
-	voted := p.IsDownvoted(accountID)
-	if !voted {
-		p.DownvoterIDs[accountID] = true
-	} else {
-		delete(p.DownvoterIDs, accountID)
-	}
-	return voted
-}
-func (p Post) IsUpvoted(accountID string) bool {
-	_, ok := p.UpvoterIDs[accountID]
+func (p Post) IsLiked(accountID string) bool {
+	_, ok := p.LikeIDs[accountID]
 	return ok
 }
-func (p Post) IsDownvoted(accountID string) bool {
-	_, ok := p.DownvoterIDs[accountID]
-	return ok
-}
-func (p Post) DownvoteCount() int {
-	return len(p.DownvoterIDs)
-}
-func (p Post) UpvoteCount() int {
-	return len(p.UpvoterIDs)
+func (p Post) LikesCount() int {
+	return len(p.LikeIDs)
 }

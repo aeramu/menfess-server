@@ -5,7 +5,7 @@ type Repository interface {
 	Save(post Post) error
 	FindByID(id string) (*Post, error)
 	FindByParentID(id string, first int, after string, sort bool) (*[]Post, error)
-	FindByRoomID(id string, first int, after string, sort bool) (*[]Post, error)
+	FindByAuthorID(id string, first int, after string, sort bool) (*[]Post, error)
 	//GetPostByID(id string) Post
 	//GetPostListByParentID(parentID string, first int, after string, ascSort bool) []Post
 	//GetPostListByRoomIDs(roomIDs []string, first int, after string, ascSort bool) []Post
@@ -14,4 +14,8 @@ type Repository interface {
 	//UpdateDownvoterIDs(postID string, accountID string, exist bool)
 	//GetRoomList() []Room
 	//GetRoom(id string) Room
+}
+
+type NotificationClient interface {
+	Send(event string, userID string, data interface{}) error
 }

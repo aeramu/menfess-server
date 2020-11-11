@@ -2,8 +2,9 @@ package server
 
 import (
 	"context"
+	auth "github.com/aeramu/menfess-server/auth/service"
 	"github.com/aeramu/menfess-server/gateway/resolver"
-	room "github.com/aeramu/menfess-server/room/service"
+	user "github.com/aeramu/menfess-server/user/service"
 	"net/http"
 
 	post "github.com/aeramu/menfess-server/post/service"
@@ -18,8 +19,8 @@ type Handler interface {
 }
 
 //New Handler for graphql
-func NewServer(ctx context.Context, post post.Service, room room.Service) Handler {
-	schema := graphql.MustParseSchema(schemaString, resolver.NewResolver(ctx, post, room))
+func NewServer(ctx context.Context, post post.Service, auth auth.Service, user user.Service) Handler {
+	schema := graphql.MustParseSchema(schemaString, resolver.NewResolver(ctx, post, auth, user))
 	return &handler{&relay.Handler{Schema: schema}}
 }
 
@@ -37,46 +38,41 @@ var schemaString = `
 		mutation: Mutation
   	}
   	type Query{
-		menfessPost(id: ID!): MenfessPost!
-		menfessPostList(first: Int, after: ID, sort: Int): MenfessPostConnection!
-		menfessPostRooms(ids: [ID!]!, first: Int, after: ID): MenfessPostConnection!
-		menfessRoomList: MenfessRoomConnection!
-		menfessAvatarList: [String!]!
+		me: User
+		post(id: ID!): Post
+		posts(first: Int, after: ID): PostConnection!
+		menfess: UserConnection!
 	}
 	type Mutation{
-		postMenfessPost(name: String!, avatar: String!, body: String!, parentID: ID, repostID: ID, roomID: ID): MenfessPost!
-		upvoteMenfessPost(postID: ID!): MenfessPost!
-		downvoteMenfessPost(postID: ID!): MenfessPost!
+		register(email: String!, password: String!, pushToken: String!): String!
+		login(email: String!, password: String!, pushToken: String!): String!
+		logout(id: ID!, pushToken: String!): String!
+		updateProfile(name: String!, avatar: String!, bio: String!): User
+		createPost(body: String!, authorID: ID!, parentID: ID): Post
+		likePost(id: ID!): Post
 	}
-	type MenfessPost{
+	type Post{
 		id: ID!
 		timestamp: Int!
-		name: String!
-		avatar: String!
 		body: String!
-		replyCount: Int!
-		upvoteCount: Int!
-		downvoteCount: Int!
-		upvoted: Boolean!
-		downvoted: Boolean!
-		parent: MenfessPost
-		repost: MenfessPost
-		child(first: Int, after: ID, sort: Int): MenfessPostConnection!
-		room: String!
+		author: User
+		likesCount: Int!
+		liked: Boolean!
+		repliesCount: Int!
+		replies(first: Int, after: ID): PostConnection!
 	}
-	type MenfessRoom{
+	type User{
 		id: ID!
 		name: String!
-		desc: String!
 		avatar: String!
-		status: Boolean!
+		bio: String!
 	}
-	type MenfessPostConnection{
-		edges: [MenfessPost!]!
+	type PostConnection{
+		edges: [Post!]!
 		pageInfo: PageInfo!
 	}
-	type MenfessRoomConnection{
-		edges: [MenfessRoom!]!
+	type UserConnection{
+		edges: [User!]!
 		pageInfo: PageInfo!
 	}
 	type PageInfo{

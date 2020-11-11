@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"encoding/json"
-
-	graphql "github.com/aeramu/menfess-server/implementation/handler/graphql"
-	mongodb "github.com/aeramu/menfess-server/implementation/mongodb/repository"
-	"github.com/aeramu/menfess-server/post/service"
+	"github.com/aeramu/menfess-server/gateway/server"
+	postRepo "github.com/aeramu/menfess-server/post/repository"
+	post "github.com/aeramu/menfess-server/post/service"
+	roomRepo "github.com/aeramu/menfess-server/room/repository"
+	room "github.com/aeramu/menfess-server/room/service"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
@@ -27,11 +28,15 @@ func handler(ctx context.Context, request events.APIGatewayProxyRequest) (events
 	//add token from header
 	context := context.WithValue(ctx, "request", request.Headers)
 
-	repository := mongodb.New()
-	interactor := service.NewService(repository)
-	handler := graphql.New(context, interactor)
+	postRepo := postRepo.NewRepository()
+	postService := post.NewService(postRepo)
 
-	response := handler.Response(context, parameter.Query, parameter.OperationName, parameter.Variables)
+	roomRepo := roomRepo.NewRepository()
+	roomService := room.NewService(roomRepo)
+
+	handler := server.NewServer(context, postService, roomService)
+
+	response := handler.Response(ctx, parameter.Query, parameter.OperationName, parameter.Variables)
 	responseJSON, _ := json.Marshal(response)
 
 	//response
