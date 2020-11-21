@@ -1,11 +1,13 @@
 package service
 
 import (
+	"github.com/aeramu/menfess-server/internal/auth/constants"
+	"github.com/dgrijalva/jwt-go"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
-
-	"github.com/aeramu/menfess-server/internal/auth/middleware/jwt"
 )
+
+//go:generate mockery --all --output=../mock --case=underscore
 
 type Service interface {
 	Login(req LoginReq) (string, error)
@@ -59,7 +61,7 @@ func (s *service) Login(req LoginReq) (string, error) {
 	payload := Payload{
 		ID: user.ID,
 	}
-	token := jwt.GenerateJWT(payload)
+	token := generateJWT(payload)
 
 	return token, nil
 }
@@ -117,7 +119,7 @@ func (s *service) Register(req RegisterReq) (string, error) {
 	payload := Payload{
 		ID: user.ID,
 	}
-	token := jwt.GenerateJWT(payload)
+	token := generateJWT(payload)
 
 	return token, nil
 }
@@ -138,7 +140,7 @@ func (s *service) Logout(req LogoutReq) error {
 
 func (s *service) Auth(req AuthReq) (*Payload, error) {
 	// Decode jwt
-	payload, err := jwt.DecodeJWT(req.Token)
+	payload, err := decodeJWT(req.Token)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err":   err,
@@ -165,4 +167,33 @@ func comparePassword(hash string, pwd string) bool {
 		return false
 	}
 	return true
+}
+
+var jwtSecretKey = []byte("Menfessui132jd98132dm&*6sajb23")
+
+type jwtClaims struct {
+	jwt.StandardClaims
+	Payload Payload
+}
+
+func generateJWT(payload Payload) string {
+	jwtClaims := &jwtClaims{
+		Payload: payload,
+	}
+	token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, jwtClaims).SignedString(jwtSecretKey)
+	return "Bearer " + token
+}
+
+func decodeJWT(token string) (*Payload, error) {
+	if len(token) < 8 {
+		return nil, constants.ErrInvalidToken
+	}
+	token = token[7:]
+	claims := new(jwtClaims)
+
+	// TODO: handle parsing error
+	jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+		return token, nil
+	})
+	return &claims.Payload, nil
 }
