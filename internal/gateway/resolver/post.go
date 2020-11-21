@@ -3,9 +3,9 @@ package resolver
 import (
 	"log"
 
-	auth "github.com/aeramu/menfess-server/auth/service"
-	post "github.com/aeramu/menfess-server/post/service"
-	user "github.com/aeramu/menfess-server/user/service"
+	auth "github.com/aeramu/menfess-server/internal/auth/service"
+	post "github.com/aeramu/menfess-server/internal/post/service"
+	user "github.com/aeramu/menfess-server/internal/user/service"
 	"github.com/graph-gophers/graphql-go"
 )
 

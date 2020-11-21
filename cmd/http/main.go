@@ -6,32 +6,33 @@ import (
 	"net/http"
 	"os"
 
-	authClient "github.com/aeramu/menfess-server/auth/client"
-	auth "github.com/aeramu/menfess-server/auth/service"
-	"github.com/aeramu/menfess-server/gateway/server"
-	postClient "github.com/aeramu/menfess-server/post/client"
-	postRepository "github.com/aeramu/menfess-server/post/repository"
-	post "github.com/aeramu/menfess-server/post/service"
-	userRepository "github.com/aeramu/menfess-server/user/repository"
-	user "github.com/aeramu/menfess-server/user/service"
+	authClient "github.com/aeramu/menfess-server/internal/auth/client"
+	auth "github.com/aeramu/menfess-server/internal/auth/service"
+	"github.com/aeramu/menfess-server/internal/gateway/server"
+	postClient "github.com/aeramu/menfess-server/internal/post/client"
+	postRepository "github.com/aeramu/menfess-server/internal/post/repository"
+	post "github.com/aeramu/menfess-server/internal/post/service"
+	userRepository "github.com/aeramu/menfess-server/internal/user/repository"
+	user "github.com/aeramu/menfess-server/internal/user/service"
 	"github.com/friendsofgo/graphiql"
 )
 
 func main() {
 	//TODO: catch header, not test header
 	ctx := context.WithValue(context.Background(), "request", map[string]string{
-		"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJQYXlsb2FkIjp7IklEIjoiNWY5ZTkyNGYzZTU4N2E1ZTc1OTYyZWU2In19.9nxUGhIrhk_reePdqtg_hspD1ab64PX6gmaZPtodmwU",
+		"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJQYXlsb2FkIjp7IklEIjoiNWZhZTc5ODU4YjlhYmEzNTVmNDQ5MmY3In19.f7XPo_Jj20Lpt3xLv8nkC0NTpemoKaEcO7UsFvcsQ0A",
 	})
 
 	userRepo := userRepository.NewRepository()
 	userService := user.NewService(userRepo)
 
-	notifClient := postClient.NewNotificationClient(userService)
+	postNotifClient := postClient.NewNotificationClient(userService)
 	postRepo := postRepository.NewRepository()
-	postService := post.NewService(postRepo, notifClient)
+	postService := post.NewService(postRepo, postNotifClient)
 
-	userClient := authClient.NewUserClient(userService)
-	authService := auth.NewService(userClient)
+	authUserClient := authClient.NewUserClient(userService)
+	authNotifClient := authClient.NewNotificationClient(userService)
+	authService := auth.NewService(authUserClient, authNotifClient)
 
 	handler := server.NewServer(ctx, postService, authService, userService)
 	http.Handle("/", handler)

@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/aeramu/menfess-server/user/service"
+	"github.com/aeramu/menfess-server/internal/user/service"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

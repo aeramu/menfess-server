@@ -2,12 +2,12 @@ package server
 
 import (
 	"context"
-	auth "github.com/aeramu/menfess-server/auth/service"
-	"github.com/aeramu/menfess-server/gateway/resolver"
-	user "github.com/aeramu/menfess-server/user/service"
+	auth "github.com/aeramu/menfess-server/internal/auth/service"
+	"github.com/aeramu/menfess-server/internal/gateway/resolver"
+	user "github.com/aeramu/menfess-server/internal/user/service"
 	"net/http"
 
-	post "github.com/aeramu/menfess-server/post/service"
+	post "github.com/aeramu/menfess-server/internal/post/service"
 	"github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
 )
@@ -38,10 +38,12 @@ var schemaString = `
 		mutation: Mutation
   	}
   	type Query{
+
 		me: User
 		post(id: ID!): Post
 		posts(first: Int, after: ID): PostConnection!
 		menfess: UserConnection!
+		avatars: [String!]!
 	}
 	type Mutation{
 		register(email: String!, password: String!, pushToken: String!): String!

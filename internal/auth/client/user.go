@@ -1,15 +1,15 @@
 package client
 
 import (
-	auth "github.com/aeramu/menfess-server/auth/service"
-	user "github.com/aeramu/menfess-server/user/service"
+	auth "github.com/aeramu/menfess-server/internal/auth/service"
+	user "github.com/aeramu/menfess-server/internal/user/service"
 )
 
-func NewUserClient(user user.Service) auth.UserClient{
+func NewUserClient(user user.Service) auth.UserClient {
 	return &userClient{user}
 }
 
-type userClient struct{
+type userClient struct {
 	user.Service
 }
 
@@ -19,7 +19,7 @@ func (c *userClient) Create(email string, password string, pushToken string) (*a
 		Password:  password,
 		PushToken: pushToken,
 	})
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
 	return &auth.User{
@@ -31,10 +31,10 @@ func (c *userClient) Create(email string, password string, pushToken string) (*a
 
 func (c *userClient) GetByEmail(email string) (*auth.User, error) {
 	u, err := c.Service.GetByEmail(user.GetByEmailReq{Email: email})
-	if err != nil{
+	if err != nil {
 		return nil, err
 	}
-	if u == nil{
+	if u == nil {
 		return nil, nil
 	}
 	return &auth.User{
@@ -43,20 +43,3 @@ func (c *userClient) GetByEmail(email string) (*auth.User, error) {
 		Password: u.Password,
 	}, nil
 }
-
-func (c *userClient) AddPushToken(id string, pushToken string) error {
-	err := c.Service.AddPushToken(user.PushTokenReq{
-		ID:        id,
-		PushToken: pushToken,
-	})
-	return err
-}
-
-func (c *userClient) RemovePushToken(id string, pushToken string) error {
-	err := c.Service.RemovePushToken(user.PushTokenReq{
-		ID:        id,
-		PushToken: pushToken,
-	})
-	return err
-}
-

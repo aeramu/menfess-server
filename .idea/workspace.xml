@@ -10,16 +10,6 @@
         <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
         <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
       </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:heroku" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
     </expand>
     <select>
       <path>
@@ -31,50 +21,36 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="84f82642-98a1-48ae-bf68-73d6330be686" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/auth/client/userClient.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth/service/api.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth/service/interface.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth/service/model.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/auth/service/service.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gateway/resolver/user.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/post/client/notificationClient.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/post/service/api.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user/repository/mongodb.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user/service/api.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user/service/interface.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user/service/model.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/user/service/service.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/auth/client/notification.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/auth/constants/constants.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/internal/middleware/jwt/jwt.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/resolver/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/resolver/api.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/resolver/post.go" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/resolver/post.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/resolver/resolver.go" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/resolver/resolver.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/resolver/room.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway/server/graphql.go" beforeDir="false" afterPath="$PROJECT_DIR$/gateway/server/graphql.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth/client/userClient.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/client/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth/service/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/service/api.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth/service/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/service/interface.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth/service/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/service/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/auth/service/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/http/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/http/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/lambda/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/lambda/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/resolver/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/gateway/resolver/api.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/resolver/post.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/gateway/resolver/post.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/resolver/resolver.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/gateway/resolver/resolver.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/resolver/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/gateway/resolver/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway/server/graphql.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/gateway/server/graphql.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/handler.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/pageInfo.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/postConnection.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/resolver.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/room.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/handler/graphql/roomConnection.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/mongodb/gateway/gateway.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/mongodb/gateway/post.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/mongodb/gateway/room.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/mongodb/repository/post.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/mongodb/repository/repository.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/implementation/mongodb/repository/room.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/infrastructure/http/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/http/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infrastructure/lambda/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/lambda/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post/repository/mongodb.go" beforeDir="false" afterPath="$PROJECT_DIR$/post/repository/mongodb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post/service/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/post/service/model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post/service/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/post/service/interface.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/post/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/post/service/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/room/repository/mongodb.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/room/service/api.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/room/service/model.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/room/service/repository.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/room/service/service.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/post/client/notificationClient.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/post/client/notificationClient.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post/repository/mongodb.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/post/repository/mongodb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post/service/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/post/service/api.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post/service/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/post/service/interface.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post/service/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/post/service/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/post/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/post/service/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/repository/mongodb.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/user/repository/mongodb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/service/api.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/user/service/api.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/service/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/user/service/interface.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/service/model.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/user/service/model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/user/service/service.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,18 +91,19 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../library-server" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="watcher.settings" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/implementation" />
-      <recent name="$PROJECT_DIR$/gateway/resolver" />
-      <recent name="$PROJECT_DIR$/gateway" />
-      <recent name="$PROJECT_DIR$/room" />
-      <recent name="$PROJECT_DIR$/post" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/room/repository" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/internal/middleware/jwt" />
+      <recent name="$PROJECT_DIR$/internal/auth/constants" />
+      <recent name="$PROJECT_DIR$/internal" />
+      <recent name="$PROJECT_DIR$/implementation" />
+      <recent name="$PROJECT_DIR$/gateway/resolver" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -161,14 +138,22 @@
     <integration-enabled>true</integration-enabled>
   </component>
   <component name="WindowStateProjectService">
-    <state x="466" y="156" width="424" height="486" key="FileChooserDialogImpl" timestamp="1604904008322">
+    <state x="321" y="168" width="714" height="466" key="EditFileWatcherDialog" timestamp="1605931643133">
       <screen x="0" y="28" width="1366" height="740" />
     </state>
-    <state x="466" y="156" width="424" height="486" key="FileChooserDialogImpl/0.28.1366.740@0.28.1366.740" timestamp="1604904008322" />
+    <state x="321" y="168" width="714" height="466" key="EditFileWatcherDialog/0.28.1366.740@0.28.1366.740" timestamp="1605931643133" />
+    <state x="466" y="156" width="424" height="486" key="FileChooserDialogImpl" timestamp="1605160634203">
+      <screen x="0" y="28" width="1366" height="740" />
+    </state>
+    <state x="466" y="156" width="424" height="486" key="FileChooserDialogImpl/0.28.1366.740@0.28.1366.740" timestamp="1605160634203" />
     <state x="266" y="144" width="824" height="510" key="IDE.errors.dialog" timestamp="1604113691914">
       <screen x="0" y="28" width="1366" height="740" />
     </state>
     <state x="266" y="144" width="824" height="510" key="IDE.errors.dialog/0.28.1366.740@0.28.1366.740" timestamp="1604113691914" />
+    <state x="172" y="33" width="1022" height="732" key="SettingsEditor" timestamp="1605931646015">
+      <screen x="0" y="28" width="1366" height="740" />
+    </state>
+    <state x="172" y="33" width="1022" height="732" key="SettingsEditor/0.28.1366.740@0.28.1366.740" timestamp="1605931646015" />
     <state x="0" y="28" width="616" height="740" key="find.popup" timestamp="1603766874628">
       <screen x="0" y="28" width="1366" height="740" />
     </state>

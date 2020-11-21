@@ -1,13 +1,13 @@
 package client
 
 import (
-	post "github.com/aeramu/menfess-server/post/service"
-	user "github.com/aeramu/menfess-server/user/service"
+	post "github.com/aeramu/menfess-server/internal/post/service"
+	user "github.com/aeramu/menfess-server/internal/user/service"
 	expo "github.com/oliveroneill/exponent-server-sdk-golang/sdk"
 	"log"
 )
 
-func NewNotificationClient(user user.Service) post.NotificationClient{
+func NewNotificationClient(user user.Service) post.NotificationClient {
 	return &notificationClient{
 		expo.NewPushClient(nil),
 		user,
@@ -16,7 +16,7 @@ func NewNotificationClient(user user.Service) post.NotificationClient{
 
 type notificationClient struct {
 	client *expo.PushClient
-	user user.Service
+	user   user.Service
 }
 
 func (c *notificationClient) Send(event string, userID string, req interface{}) error {

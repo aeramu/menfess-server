@@ -1,7 +1,7 @@
 package resolver
 
 import (
-	user "github.com/aeramu/menfess-server/user/service"
+	user "github.com/aeramu/menfess-server/internal/user/service"
 	"github.com/graph-gophers/graphql-go"
 )
 

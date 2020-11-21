@@ -23,7 +23,7 @@ func NewService(repo Repository, notif NotificationClient) Service {
 }
 
 type service struct {
-	repo Repository
+	repo  Repository
 	notif NotificationClient
 }
 
