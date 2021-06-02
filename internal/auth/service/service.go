@@ -16,35 +16,37 @@ type Service interface {
 	Auth(req AuthReq) (*Payload, error)
 }
 
-func NewService(user UserClient, notif NotificationClient) Service {
+func NewService(repo Repository, user UserClient, notif NotificationClient) Service {
 	return &service{
+		repo:  repo,
 		user:  user,
 		notif: notif,
 	}
 }
 
 type service struct {
+	repo  Repository
 	user  UserClient
 	notif NotificationClient
 }
 
 func (s *service) Login(req LoginReq) (string, error) {
 	// Check registered email
-	user, err := s.user.GetByEmail(req.Email)
+	user, err := s.repo.FindByEmail(req.Email)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err":   err,
 			"email": req.Email,
 		}).Errorln("[Login] Failed get user by email")
-		return "", err
+		return "", constants.ErrInternalServer
 	}
 	if user == nil {
-		return "Email doesn't registered", nil
+		return "", constants.ErrEmailNotRegistered
 	}
 
 	// Check password
 	if !comparePassword(user.Password, req.Password) {
-		return "Wrong Password", nil
+		return "", constants.ErrPasswordWrong
 	}
 
 	// Add push token for notification
@@ -54,7 +56,7 @@ func (s *service) Login(req LoginReq) (string, error) {
 			"id":        user.ID,
 			"pushToken": req.PushToken,
 		}).Errorln("[Login] Failed add push token to user service")
-		return "", err
+		return "", constants.ErrInternalServer
 	}
 
 	// Generate token token
@@ -67,42 +69,48 @@ func (s *service) Login(req LoginReq) (string, error) {
 }
 
 func (s *service) Register(req RegisterReq) (string, error) {
-	// Validate request
-	// TODO: create validate method on register req
-	if req.Email == "" || req.Password == "" || req.PushToken == "" {
-		return "Invalid Request", nil
+	// validate request
+	if err := req.Validate(); err != nil {
+		return "", err
 	}
 
 	// Check registered email
-	user, err := s.user.GetByEmail(req.Email)
+	user, err := s.repo.FindByEmail(req.Email)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err":   err,
 			"email": req.Email,
 		}).Errorln("[Register] Failed get user by email from user service")
-		return "", err
+		return "", constants.ErrInternalServer
 	}
 	if user != nil {
-		return "Email already registered", nil
+		return "", constants.ErrEmailRegistered
 	}
 
 	// Create user
+	user, err = s.user.Create()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err,
+		}).Errorln("[Register] Failed create user")
+		return "", constants.ErrInternalServer
+	}
 	hash, err := hashAndSalt(req.Password)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err":      err,
 			"password": req.Password,
 		}).Errorln("[Register] Failed hash password")
-		return "", err
+		return "", constants.ErrInternalServer
 	}
-	user, err = s.user.Create(req.Email, hash, req.PushToken)
-	if err != nil {
+	user.Email = req.Email
+	user.Password = hash
+	if err := s.repo.Save(*user); err != nil {
 		log.WithFields(log.Fields{
-			"err":       err,
-			"email":     req.Email,
-			"pushToken": req.PushToken,
-		}).Errorln("[Register] Failed create user")
-		return "", err
+			"err":   err,
+			"email": req.Email,
+		}).Errorln("[Register] Failed save user to repository")
+		return "", constants.ErrInternalServer
 	}
 
 	// Add push token for notification
@@ -112,12 +120,13 @@ func (s *service) Register(req RegisterReq) (string, error) {
 			"id":        user.ID,
 			"pushToken": req.PushToken,
 		}).Errorln("[Register] Failed add push token")
-		return "", err
+		return "", constants.ErrInternalServer
 	}
 
 	// Generate JWT Token
 	payload := Payload{
-		ID: user.ID,
+		ID:        user.ID,
+		PushToken: req.PushToken,
 	}
 	token := generateJWT(payload)
 
@@ -125,14 +134,23 @@ func (s *service) Register(req RegisterReq) (string, error) {
 }
 
 func (s *service) Logout(req LogoutReq) error {
+	payload, err := s.Auth(AuthReq{Token: req.Token})
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err":   err,
+			"token": req.Token,
+		}).Errorln("[Logout] Failed get jwt payload")
+		return constants.ErrInternalServer
+	}
+
 	// Remove push token from notification
-	if err := s.notif.RemovePushToken(req.ID, req.PushToken); err != nil {
+	if err := s.notif.RemovePushToken(payload.ID, payload.PushToken); err != nil {
 		log.WithFields(log.Fields{
 			"err":       err,
-			"id":        req.ID,
-			"pushToken": req.PushToken,
+			"id":        payload.ID,
+			"pushToken": payload.PushToken,
 		}).Errorln("[Logout] Failed remove push token")
-		return err
+		return constants.ErrInternalServer
 	}
 
 	return nil
@@ -146,7 +164,7 @@ func (s *service) Auth(req AuthReq) (*Payload, error) {
 			"err":   err,
 			"token": req.Token,
 		}).Errorln("[Auth] Failed decode jwt token")
-		return nil, err
+		return nil, constants.ErrInternalServer
 	}
 
 	return payload, nil
@@ -181,14 +199,10 @@ func generateJWT(payload Payload) string {
 		Payload: payload,
 	}
 	token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, jwtClaims).SignedString(jwtSecretKey)
-	return "Bearer " + token
+	return token
 }
 
 func decodeJWT(token string) (*Payload, error) {
-	if len(token) < 8 {
-		return nil, constants.ErrInvalidToken
-	}
-	token = token[7:]
 	claims := new(jwtClaims)
 
 	// TODO: handle parsing error

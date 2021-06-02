@@ -1,8 +1,12 @@
 package service
 
+type Repository interface {
+	Save(user User) error
+	FindByEmail(email string) (*User, error)
+}
+
 type UserClient interface {
-	Create(email string, password string, pushToken string) (*User, error)
-	GetByEmail(email string) (*User, error)
+	Create() (*User, error)
 }
 
 type NotificationClient interface {

@@ -4,11 +4,11 @@ package main
 //import (
 //	"context"
 //	"encoding/json"
-//	"github.com/aeramu/menfess-server/internal/gateway/server"
-//	postRepo "github.com/aeramu/menfess-server/internal/post/repository"
-//	post "github.com/aeramu/menfess-server/internal/post/service"
-//	roomRepo "github.com/aeramu/menfess-server/room/repository"
-//	room "github.com/aeramu/menfess-server/room/service"
+//	"github.com/aeramu/menfess-handler/internal/gateway/handler"
+//	postRepo "github.com/aeramu/menfess-handler/internal/post/repository"
+//	post "github.com/aeramu/menfess-handler/internal/post/service"
+//	roomRepo "github.com/aeramu/menfess-handler/room/repository"
+//	room "github.com/aeramu/menfess-handler/room/service"
 //	"github.com/aws/aws-lambda-go/events"
 //	"github.com/aws/aws-lambda-go/lambda"
 //)
@@ -35,7 +35,7 @@ package main
 //	roomRepo := roomRepo.NewRepository()
 //	roomService := room.NewService(roomRepo)
 //
-//	handler := server.NewServer(context, postService, roomService)
+//	handler := handler.NewServer(context, postService, roomService)
 //
 //	response := handler.Response(ctx, parameter.Query, parameter.OperationName, parameter.Variables)
 //	responseJSON, _ := json.Marshal(response)

@@ -1,32 +1,42 @@
 package service
 
 type (
-	CreateReq struct{
-		Body string
+	CreateReq struct {
+		Body     string
 		AuthorID string
-		UserID string
+		UserID   string
 		ParentID string
 	}
 	GetReq struct {
 		ID string
 	}
-	FeedReq struct{
+	FeedReq struct {
 		First int
 		After string
 	}
-	RepliesReq struct {
+	PostRepliesReq struct {
 		PostID string
-		First int
-		After string
+		First  int
+		After  string
 	}
-	LikeReq struct{
+	UserPostsReq struct {
+		UserID string
+		First  int
+		After  string
+	}
+	AuthorPostsReq struct {
+		AuthorID string
+		First    int
+		After    string
+	}
+	LikeReq struct {
 		PostID string
 		UserID string
 	}
-	ReportReq struct{
+	ReportReq struct {
 		PostID string
 	}
-	DeleteReq struct{
+	DeleteReq struct {
 		PostID string
 	}
 )

@@ -1,8 +1,8 @@
 package service
 
 import (
-	"errors"
-	"log"
+	"github.com/aeramu/menfess-server/internal/user/constants"
+	log "github.com/sirupsen/logrus"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -10,11 +10,8 @@ import (
 type Service interface {
 	Create(req CreateReq) (*User, error)
 	Get(req GetReq) (*User, error)
-	GetByEmail(req GetByEmailReq) (*User, error)
-	GetMenfess(req GetMenfessReq) (*[]User, error)
+	GetMenfess(req GetMenfessReq) ([]User, error)
 	UpdateProfile(req UpdateProfileReq) (*User, error)
-	AddPushToken(req PushTokenReq) error
-	RemovePushToken(req PushTokenReq) error
 }
 
 type service struct {
@@ -29,17 +26,18 @@ func NewService(repo Repository) Service {
 
 func (s *service) Create(req CreateReq) (*User, error) {
 	user := &User{
-		ID:        primitive.NewObjectID().Hex(),
-		Email:     req.Email,
-		Password:  req.Password,
-		Name:      "",
-		Avatar:    "",
-		Bio:       "",
-		PushToken: map[string]bool{req.PushToken: true},
+		ID:     primitive.NewObjectID().Hex(),
+		Name:   "",
+		Avatar: "",
+		Bio:    "",
+		Type:   req.Type,
 	}
 	if err := s.repo.Save(*user); err != nil {
-		log.Println("Repository Error:", err)
-		return nil, err
+		log.WithFields(log.Fields{
+			"err": err,
+			"id":  user.ID,
+		}).Errorln("[Create] Failed save created user")
+		return nil, constants.ErrInternalServer
 	}
 	return user, nil
 }
@@ -47,25 +45,21 @@ func (s *service) Create(req CreateReq) (*User, error) {
 func (s *service) Get(req GetReq) (*User, error) {
 	user, err := s.repo.FindByID(req.ID)
 	if err != nil {
-		log.Println("Repository Error:", err)
-		return nil, err
+		log.WithFields(log.Fields{
+			"err": err,
+			"id":  req.ID,
+		}).Errorln("[Get] Failed get user by id")
+		return nil, constants.ErrInternalServer
 	}
 	return user, nil
 }
 
-func (s *service) GetByEmail(req GetByEmailReq) (*User, error) {
-	user, err := s.repo.FindByEmail(req.Email)
-	if err != nil {
-		log.Println("Repository Error:", err)
-		return nil, err
-	}
-	return user, nil
-}
-
-func (s *service) GetMenfess(req GetMenfessReq) (*[]User, error) {
+func (s *service) GetMenfess(req GetMenfessReq) ([]User, error) {
 	users, err := s.repo.FindByType("menfess")
 	if err != nil {
-		log.Println("Repository Error:", err)
+		log.WithFields(log.Fields{
+			"err": err,
+		}).Errorln("[GetMenfess] Failed get user by type menfess")
 		return nil, err
 	}
 	return users, nil
@@ -74,52 +68,34 @@ func (s *service) GetMenfess(req GetMenfessReq) (*[]User, error) {
 func (s *service) UpdateProfile(req UpdateProfileReq) (*User, error) {
 	user, err := s.repo.FindByID(req.ID)
 	if err != nil {
-		log.Println("Repository Error:", err)
-		return nil, err
+		log.WithFields(log.Fields{
+			"err": err,
+			"id":  req.ID,
+		}).Errorln("[UpdateProfile] Failed get user by id")
+		return nil, constants.ErrInternalServer
 	}
 	if user == nil {
-		return nil, nil
+		return nil, constants.ErrUserNotFound
 	}
-	user.Name = req.Name
-	user.Avatar = req.Avatar
-	user.Bio = req.Bio
+
+	if req.Name != nil {
+		user.Name = *req.Name
+	}
+	if req.Avatar != nil {
+		user.Avatar = *req.Avatar
+	}
+	if req.Bio != nil {
+		user.Bio = *req.Bio
+	}
 	if err := s.repo.Save(*user); err != nil {
-		log.Println("Repository Error:", err)
-		return nil, err
+		log.WithFields(log.Fields{
+			"err":    err,
+			"id":     user.ID,
+			"name":   user.Name,
+			"avatar": user.Avatar,
+			"bio":    user.Bio,
+		}).Errorln("[Create] Failed save updated user")
+		return nil, constants.ErrInternalServer
 	}
 	return user, nil
-}
-
-func (s *service) AddPushToken(req PushTokenReq) error {
-	user, err := s.repo.FindByID(req.ID)
-	if err != nil {
-		log.Println("Repository Error:", err)
-		return err
-	}
-	if user == nil {
-		return errors.New("user doesn't exist")
-	}
-	user.PushToken[req.PushToken] = true
-	if err := s.repo.Save(*user); err != nil {
-		log.Println("Repository Error:", err)
-		return err
-	}
-	return nil
-}
-
-func (s *service) RemovePushToken(req PushTokenReq) error {
-	user, err := s.repo.FindByID(req.ID)
-	if err != nil {
-		log.Println("Repository Error:", err)
-		return err
-	}
-	if user == nil {
-		return errors.New("user doesn't exist")
-	}
-	user.PushToken[req.PushToken] = false
-	if err := s.repo.Save(*user); err != nil {
-		log.Println("Repository Error:", err)
-		return err
-	}
-	return err
 }

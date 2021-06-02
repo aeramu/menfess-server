@@ -1,6 +1,7 @@
 package resolver
 
 import (
+	"context"
 	"log"
 
 	auth "github.com/aeramu/menfess-server/internal/auth/service"
@@ -34,8 +35,8 @@ func (r Post) Author() *User {
 func (r Post) LikesCount() int32 {
 	return int32(r.Post.LikesCount())
 }
-func (r Post) Liked() bool {
-	jwt := r.root.Context.Value("request").(map[string]string)["Authorization"]
+func (r Post) Liked(ctx context.Context) bool {
+	jwt := ctx.Value("Authorization").(string)
 	payload, err := r.root.auth.Auth(auth.AuthReq{Token: jwt})
 	if err != nil {
 		log.Println("Auth Service Error:", err)
@@ -55,7 +56,7 @@ func (r Post) Replies(req ConnectionReq) PostConnection {
 	if req.After != nil {
 		after = string(*req.After)
 	}
-	postList, err := r.root.post.Replies(post.RepliesReq{
+	postList, err := r.root.post.PostReplies(post.PostRepliesReq{
 		PostID: r.Post.ID,
 		First:  first,
 		After:  after,
@@ -65,7 +66,7 @@ func (r Post) Replies(req ConnectionReq) PostConnection {
 		return PostConnection{[]Post{}, r.root}
 	}
 	var posts []Post
-	for _, elem := range *postList {
+	for _, elem := range postList {
 		posts = append(posts, Post{elem, r.root})
 	}
 	return PostConnection{posts, r.root}

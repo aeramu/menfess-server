@@ -2,42 +2,42 @@ package resolver
 
 import "github.com/graph-gophers/graphql-go"
 
-type(
-	PostReq struct{
+type (
+	// Auth
+	RegisterReq struct {
+		Email     string
+		Password  string
+		PushToken string
+	}
+	LoginReq struct {
+		Email     string
+		Password  string
+		PushToken string
+	}
+
+	// User
+	UpdateProfileReq struct {
+		Name   *string
+		Avatar *string
+		Bio    *string
+	}
+
+	PostReq struct {
 		ID graphql.ID
 	}
-	ConnectionReq struct{
+	ConnectionReq struct {
 		First *int32
 		After *graphql.ID
 	}
 	CreatePostReq struct {
-		Body string
+		Body     string
 		AuthorID graphql.ID
 		ParentID *graphql.ID
 	}
-	DeletePostReq struct{
+	DeletePostReq struct {
 		ID graphql.ID
 	}
-	LikePostReq struct{
+	LikePostReq struct {
 		ID graphql.ID
-	}
-	RegisterReq struct{
-		Email string
-		Password string
-		PushToken string
-	}
-	LoginReq struct{
-		Email string
-		Password string
-		PushToken string
-	}
-	LogoutReq struct {
-		ID graphql.ID
-		PushToken string
-	}
-	UpdateProfileReq struct{
-		Name string
-		Avatar string
-		Bio string
 	}
 )

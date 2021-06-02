@@ -1,0 +1,63 @@
+schema{
+    query: Query
+    mutation: Mutation
+}
+
+type Query{
+    """Post"""
+    post(id: ID!): Post
+    posts(first: Int, after: ID): PostConnection!
+
+    """User"""
+    me: User
+    menfess: UserConnection!
+
+    avatars: [String!]!
+}
+
+type Mutation{
+    """Auth"""
+    register(email: String!, password: String!, pushToken: String!): String!
+    login(email: String!, password: String!, pushToken: String!): String!
+    logout: String!
+
+    """User"""
+    updateProfile(name: String, avatar: String, bio: String): User
+
+    """Post"""
+    createPost(body: String!, authorID: ID!, parentID: ID): Post
+    likePost(id: ID!): Post
+}
+
+type Post {
+    id: ID!
+    timestamp: Int!
+    body: String!
+    author: User
+    likesCount: Int!
+    liked: Boolean!
+    repliesCount: Int!
+    replies(first: Int, after: ID): PostConnection!
+}
+
+type User{
+    id: ID!
+    name: String!
+    avatar: String!
+    bio: String!
+}
+
+type PostConnection{
+    edges: [Post!]!
+    pageInfo: PageInfo!
+}
+
+type UserConnection{
+    edges: [User!]!
+    pageInfo: PageInfo!
+}
+
+type PageInfo{
+    startCursor: ID
+    endCursor: ID
+}

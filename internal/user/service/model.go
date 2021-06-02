@@ -1,11 +1,9 @@
 package service
 
-type User struct{
-	ID string
-	Email string
-	Password string
-	Name string
+type User struct {
+	ID     string
+	Name   string
 	Avatar string
-	Bio string
-	PushToken map[string]bool
+	Bio    string
+	Type   string
 }
